@@ -1,0 +1,43 @@
+// 1. Configuration
+generator client {
+  provider = "prisma-client-js"
+  // Tip: Removing custom output ensures Turbopack and Vercel 
+  // can find the generated types automatically.
+}
+
+datasource db {
+  provider = "postgresql"
+ 
+}
+
+// 2. Models
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  description String?  @db.Text // Use @db.Text for longer descriptions
+  price       Int      // Stored in cents (e.g., $10.00 = 1000) to avoid float errors
+  size        String
+  images      String[]
+  
+  // Status tracking
+  isSold      Boolean  @default(false)
+  stock       Int      @default(1)
+  
+  // Relations
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id])
+
+  // Timestamps (Crucial for audits and "New Arrivals" sorting)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Indexes (Professional touch: makes searching by category or status much faster)
+  @@index([categoryId])
+  @@index([isSold])
+}
+
+model Category {
+  id       String    @id @default(cuid())
+  name     String    @unique
+  products Product[]
+}
