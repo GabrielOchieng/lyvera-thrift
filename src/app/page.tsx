@@ -30,12 +30,13 @@ export default async function Home() {
           {products.map((product) => (
             <ProductCard
               key={product.id}
+              id={product.id}
               name={product.name}
               price={product.price}
               size={product.size}
               // Accessing the new relation:
               categoryName={product.category.name}
-              image={product.images[0] || "https://placehold.co/600x800/png"}
+              image={product.images[0]}
               isSold={product.isSold}
             />
           ))}

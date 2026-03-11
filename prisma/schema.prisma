@@ -41,3 +41,34 @@ model Category {
   name     String    @unique
   products Product[]
 }
+
+model Order {
+  id              String      @id @default(cuid())
+  createdAt       DateTime    @default(now())
+  
+  // Customer Details
+  customerName    String
+  customerPhone   String
+  deliveryAddress String
+  
+  // Payment Details
+  mpesaCode       String      @unique
+  totalAmount     Float
+  status          String      @default("PENDING") // PENDING, VERIFIED, SHIPPED
+  
+  // Relations
+  items           OrderItem[]
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id])
+  
+  // Snapshot of item at time of purchase
+  productId String
+  name      String
+  price     Float
+  size      String
+  image     String
+}
