@@ -4,7 +4,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import prisma from "../../../lib/prisma";
+import prisma from "../../lib/prisma";
 
 /**
  * CREATE PRODUCT
@@ -95,4 +95,36 @@ export async function deleteProduct(id: string) {
     console.error("Delete Error:", error);
     throw new Error("Failed to delete product.");
   }
+}
+
+export async function searchAdminItems(searchTerm: string) {
+  if (!searchTerm || searchTerm.length < 2) return { products: [], orders: [] };
+
+  const [products, orders] = await Promise.all([
+    // Search Products
+    prisma.product.findMany({
+      where: {
+        OR: [
+          { name: { contains: searchTerm, mode: "insensitive" } },
+          { category: { name: { contains: searchTerm, mode: "insensitive" } } },
+        ],
+      },
+      include: { category: true },
+      take: 3,
+    }),
+    // Search Orders
+    prisma.order.findMany({
+      where: {
+        OR: [
+          { customerName: { contains: searchTerm, mode: "insensitive" } },
+          { mpesaCode: { contains: searchTerm, mode: "insensitive" } },
+          { customerPhone: { contains: searchTerm, mode: "insensitive" } },
+        ],
+      },
+      take: 3,
+      orderBy: { createdAt: "desc" },
+    }),
+  ]);
+
+  return { products, orders };
 }

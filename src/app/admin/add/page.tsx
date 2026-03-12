@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Image as ImageIcon, CheckCircle2, Loader2, X } from "lucide-react";
-import { createProduct } from "../actions";
+import { createProduct } from "@/actions/product";
 
 export default function AddProductPage() {
   const [imageUrl, setImageUrl] = useState<string>("");

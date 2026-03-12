@@ -1,21 +1,19 @@
 // 1. Configuration
 generator client {
   provider = "prisma-client-js"
-  // Tip: Removing custom output ensures Turbopack and Vercel 
-  // can find the generated types automatically.
 }
 
 datasource db {
   provider = "postgresql"
- 
+
 }
 
 // 2. Models
 model Product {
   id          String   @id @default(cuid())
   name        String
-  description String?  @db.Text // Use @db.Text for longer descriptions
-  price       Int      // Stored in cents (e.g., $10.00 = 1000) to avoid float errors
+  description String?  @db.Text
+  price       Int      // Stored in KES
   size        String
   images      String[]
   
@@ -27,11 +25,11 @@ model Product {
   categoryId  String
   category    Category @relation(fields: [categoryId], references: [id])
 
-  // Timestamps (Crucial for audits and "New Arrivals" sorting)
+  // Timestamps
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  // Indexes (Professional touch: makes searching by category or status much faster)
+  // Indexes
   @@index([categoryId])
   @@index([isSold])
 }
@@ -54,18 +52,18 @@ model Order {
   // Payment Details
   mpesaCode       String      @unique
   totalAmount     Float
-  status          String      @default("PENDING") // PENDING, VERIFIED, SHIPPED
+  status          String      @default("PENDING") // PENDING, VERIFIED, DISPATCHED, CANCELLED
   
   // Relations
   items           OrderItem[]
 }
 
 model OrderItem {
-  id        String  @id @default(cuid())
+  id        String @id @default(cuid())
   orderId   String
-  order     Order   @relation(fields: [orderId], references: [id])
+  order     Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
   
-  // Snapshot of item at time of purchase
+  // Link back to product for restocking logic
   productId String
   name      String
   price     Float

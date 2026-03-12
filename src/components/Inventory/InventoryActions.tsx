@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { MoreVertical, Eye, Edit3, Trash2, X } from "lucide-react";
-import { deleteProduct, updateProduct } from "@/app/admin/actions";
+import { deleteProduct, updateProduct } from "@/actions/product";
 
 export default function InventoryActions({ product }: { product: any }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,7 +18,7 @@ export default function InventoryActions({ product }: { product: any }) {
 
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-white w-full max-w-lg rounded-[2rem] shadow-2xl overflow-hidden border border-zinc-200">
+          <div className="bg-white w-full max-w-lg rounded-4xl shadow-2xl overflow-hidden border border-zinc-200">
             {/* Modal Header */}
             <div className="flex justify-between items-center p-6 border-b border-zinc-100">
               <h2 className="text-xl font-serif font-bold text-maroon-primary">
