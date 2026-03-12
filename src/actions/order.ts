@@ -137,7 +137,6 @@ export async function restockOrderItems(orderId: string) {
     revalidatePath("/admin/orders");
     return { success: true };
   } catch (error) {
-    console.error("Restock Error:", error);
     return { success: false };
   }
 }
