@@ -16,6 +16,8 @@ export default async function Home() {
     },
   });
 
+  console.log("prod", products);
+
   return (
     <main>
       <HeroSlider />

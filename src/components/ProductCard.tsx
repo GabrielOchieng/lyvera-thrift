@@ -40,12 +40,24 @@ export default function ProductCard({
       {/* The Main Link Wrapper for the Product Details */}
       <Link href={`/shop/${id}`} className="block">
         <div className="relative aspect-3/4 overflow-hidden rounded-2xl bg-zinc-100 border border-zinc-200">
-          <img
+          {/* <img
             src={image || "https://placehold.co/400x533"}
             alt={name}
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-          />
+          /> */}
 
+          <img
+            src={image}
+            alt={name}
+            // This tells the browser NOT to send your website URL to TikTok.
+            // This is the specific fix for the '403 Forbidden' error.
+            referrerPolicy="no-referrer"
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              e.currentTarget.src =
+                "https://placehold.co/400x533?text=Lyvera+Piece";
+            }}
+          />
           {/* Sold Out Overlay */}
           {isSold && (
             <div className="absolute inset-0 bg-white/60 backdrop-blur-[2px] flex items-center justify-center z-10">
@@ -54,14 +66,12 @@ export default function ProductCard({
               </span>
             </div>
           )}
-
           {/* Size Badge */}
           <div className="absolute top-3 left-3 z-10">
             <span className="bg-white/90 backdrop-blur px-2 py-1 rounded-lg text-[10px] font-bold text-zinc-900 shadow-sm uppercase">
               {size}
             </span>
           </div>
-
           {/* Hover Add to Cart Button */}
           {!isSold && (
             <button
