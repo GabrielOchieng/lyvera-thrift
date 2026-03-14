@@ -1,35 +1,27 @@
-// 1. Configuration
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
-
 }
 
-// 2. Models
 model Product {
   id          String   @id @default(cuid())
   name        String
-  description String?  @db.Text
-  price       Int      // Stored in KES
+  description String?
+  price       Int
   size        String
   images      String[]
-  
-  // Status tracking
   isSold      Boolean  @default(false)
   stock       Int      @default(1)
-  
-  // Relations
   categoryId  String
-  category    Category @relation(fields: [categoryId], references: [id])
-
-  // Timestamps
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  source      String   @default("TIKTOK")
+  videoUrl    String?
+  category    Category @relation(fields: [categoryId], references: [id])
 
-  // Indexes
   @@index([categoryId])
   @@index([isSold])
 }
@@ -43,30 +35,22 @@ model Category {
 model Order {
   id              String      @id @default(cuid())
   createdAt       DateTime    @default(now())
-  
-  // Customer Details
   customerName    String
   customerPhone   String
   deliveryAddress String
-  
-  // Payment Details
   mpesaCode       String      @unique
   totalAmount     Float
-  status          String      @default("PENDING") // PENDING, VERIFIED, DISPATCHED, CANCELLED
-  
-  // Relations
+  status          String      @default("PENDING")
   items           OrderItem[]
 }
 
 model OrderItem {
   id        String @id @default(cuid())
   orderId   String
-  order     Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  
-  // Link back to product for restocking logic
   productId String
   name      String
   price     Float
   size      String
   image     String
+  order     Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
 }
