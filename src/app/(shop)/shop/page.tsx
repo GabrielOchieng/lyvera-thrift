@@ -2,6 +2,7 @@ import { SearchX, Filter, Tag, ChevronDown } from "lucide-react";
 import ProductCard from "@/components/ProductCard";
 import Link from "next/link";
 import prisma from "../../../../lib/prisma";
+import { safeDbQuery } from "@/lib/db-utils";
 
 export default async function ShopPage({
   searchParams,
@@ -33,9 +34,13 @@ export default async function ShopPage({
   if (sort === "oldest") orderBy = { createdAt: "asc" };
 
   // 2. Fetch Data
-  const categories = await prisma.category.findMany({
-    orderBy: { name: "asc" },
-  });
+  // const categories = await prisma.category.findMany({
+  //   orderBy: { name: "asc" },
+  // });
+
+  const categories = await safeDbQuery(() =>
+    prisma.category.findMany({ orderBy: { name: "asc" } }),
+  );
 
   const products = await prisma.product.findMany({
     where: {
