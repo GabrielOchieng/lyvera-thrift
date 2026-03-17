@@ -196,7 +196,7 @@ export default async function ProductDetailPage({
   // WhatsApp Order Logic
   const whatsappNumber = "254745046468";
   const whatsappOrderLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
-    `Hi Lyvera! I want to order this piece:\n\nItem: ${product.name}\nPrice: KES ${product.price}\nLink: ${process.env.NEXT_PUBLIC_SITE_URL || ""}/shop/${product.id}`,
+    `Hi Lyvera! I want to order this piece:\n\nItem: ${product.name}\nPrice: KES ${product.price}\nLink: ${process.env.NEXT_PUBLIC_APP_URL || ""}/shop/${product.id}`,
   )}`;
 
   const relatedProducts = await prisma.product.findMany({
