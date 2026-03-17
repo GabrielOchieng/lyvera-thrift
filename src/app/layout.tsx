@@ -40,6 +40,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import RecentSoldToast from "@/components/cart/RecentSoldToast";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
+import AIStylist from "@/components/ai/AiStylist";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -110,6 +111,7 @@ export default function RootLayout({
         {children}
         <RecentSoldToast />
         <WhatsAppFloat />
+        <AIStylist />
       </body>
     </html>
   );
