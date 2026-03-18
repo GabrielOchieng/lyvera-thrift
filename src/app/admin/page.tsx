@@ -3,15 +3,31 @@ import prisma from "../../../lib/prisma";
 import StatCard from "@/components/dashboard/StatCard";
 import RevenueChart from "@/components/dashboard/RevenueChart";
 import InventoryPieChart from "@/components/dashboard/InventoryPieChart";
+import { safeDbQuery } from "@/lib/db-utils"; // Import your utility
 
 export default async function AdminDashboard() {
-  const [totalItems, soldItems, orders] = await Promise.all([
-    prisma.product.count(),
-    prisma.product.count({ where: { isSold: true } }),
-    prisma.order.findMany({
-      select: { totalAmount: true, status: true, createdAt: true },
-    }),
-  ]);
+  // Wrap all initial data fetching in one safe query
+  const data = await safeDbQuery(async () => {
+    const [totalItems, soldItems, orders] = await Promise.all([
+      prisma.product.count(),
+      prisma.product.count({ where: { isSold: true } }),
+      prisma.order.findMany({
+        select: { totalAmount: true, status: true, createdAt: true },
+      }),
+    ]);
+    return { totalItems, soldItems, orders };
+  });
+
+  // Handle the case where the DB might be totally unreachable
+  if (!data) {
+    return (
+      <div className="p-10 text-center">
+        Failed to load dashboard data. Please refresh.
+      </div>
+    );
+  }
+
+  const { totalItems, soldItems, orders } = data;
 
   const verifiedRevenue = orders
     .filter((o) => o.status === "VERIFIED" || o.status === "DISPATCHED")

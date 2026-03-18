@@ -12,13 +12,16 @@ import prisma from "../../lib/prisma";
 export async function createProduct(formData: FormData) {
   const name = formData.get("name") as string;
   const description = formData.get("description") as string;
-  const categoryId = formData.get("category") as string;
+  const categoryId = formData.get("category") as string; // Likely an ID like "cm..."
   const size = formData.get("size") as string;
   const imageUrl = formData.get("imageUrl") as string;
   const rawPrice = formData.get("price");
 
-  const price = parseInt(rawPrice as string, 10);
+  // 1. Better price parsing (handles "KES 1000" or "1,000")
+  const price = parseInt((rawPrice as string).replace(/[^0-9]/g, ""), 10);
   if (isNaN(price)) throw new Error("Price must be a valid number");
+
+  if (!categoryId) throw new Error("Category is required");
 
   try {
     await prisma.product.create({
@@ -27,16 +30,19 @@ export async function createProduct(formData: FormData) {
         description,
         price,
         size,
+        // Ensure this matches your schema (is it 'images' or 'imageUrl'?)
         images: imageUrl ? [imageUrl] : [],
         isSold: false,
-        // Use the relation field name instead of the ID field
         category: {
-          connect: { id: categoryId.toLowerCase() },
+          connectOrCreate: {
+            where: { id: categoryId },
+            create: { name: categoryId }, // Fallback if ID isn't found
+          },
         },
       },
     });
   } catch (error) {
-    console.error("Database Error:", error);
+    console.error("Database Error Detail:", error);
     throw new Error("Failed to create product.");
   }
 
@@ -44,7 +50,6 @@ export async function createProduct(formData: FormData) {
   revalidatePath("/admin/inventory");
   redirect("/admin/inventory");
 }
-
 /**
  * UPDATE PRODUCT (For the Modal)
  */

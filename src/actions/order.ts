@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import prisma from "../../lib/prisma";
+import { safeDbQuery } from "@/lib/db-utils";
 
 /**
  * CREATES AN ORDER & MARKS PRODUCTS AS SOLD
@@ -119,10 +120,12 @@ export async function deleteOrder(orderId: string) {
 
 export async function restockOrderItems(orderId: string) {
   try {
-    const order = await prisma.order.findUnique({
-      where: { id: orderId },
-      include: { items: true },
-    });
+    const order = await safeDbQuery(() =>
+      prisma.order.findUnique({
+        where: { id: orderId },
+        include: { items: true },
+      }),
+    );
 
     if (!order) return { success: false, error: "Order not found" };
 
