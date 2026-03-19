@@ -125,6 +125,13 @@ export default function AdminLayout({
               </span>
             )}
           </Link>
+
+          <Link
+            href="/admin/users"
+            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition text-sm font-medium border ${isActive("/admin/users") ? "bg-white/20 border-white/20 text-thrift-gold" : "hover:bg-white/10 border-transparent text-zinc-300"}`}
+          >
+            <PlusCircle className="h-4 w-4" /> User Management
+          </Link>
         </nav>
 
         <div className="mt-auto pt-6 border-t border-white/10">

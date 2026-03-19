@@ -1,26 +1,35 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   ShoppingBag,
   Heart,
-  User,
+  User as UserIcon,
   Search,
   Loader2,
   Menu,
   X,
-} from "lucide-react"; // Added Menu and X
+  LogOut,
+  Settings,
+  UserCircle,
+} from "lucide-react";
 import { useEffect, useState, useRef } from "react";
 import { useCart } from "../../store/useCart";
 import { useDebounce } from "@/hooks/useDebounce";
 import { searchAdminItems } from "@/actions/product";
+import { useSession, signOut } from "@/lib/auth-client";
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const { data: session, isPending } = useSession();
   const cart = useCart((state) => state.cart);
+
+  console.log("user", session);
+
   const [mounted, setMounted] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // Mobile state
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Search States
   const [searchTerm, setSearchTerm] = useState("");
@@ -32,13 +41,14 @@ export default function Navbar() {
   const debouncedSearch = useDebounce(searchTerm, 300);
   const isActive = (path: string) => pathname === path;
 
-  // Close mobile menu on route change
+  // Sync hydration and close menus on route change
   useEffect(() => {
+    setMounted(true);
     setIsMobileMenuOpen(false);
   }, [pathname]);
 
+  // Search Click Outside
   useEffect(() => {
-    setMounted(true);
     const handleClickOutside = (e: MouseEvent) => {
       if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
         setShowDropdown(false);
@@ -48,6 +58,7 @@ export default function Navbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Search Logic
   useEffect(() => {
     const handleSearch = async () => {
       if (debouncedSearch.length > 2) {
@@ -68,14 +79,17 @@ export default function Navbar() {
     { name: "Home", href: "/" },
     { name: "Shop", href: "/shop" },
     { name: "Blog", href: "/blog" },
-    { name: "Cart", href: "/cart" },
     { name: "Orders", href: "/orders" },
-    { name: "Admin", href: "/admin" },
   ];
+
+  const handleSignOut = async () => {
+    await signOut();
+    router.refresh();
+  };
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-[60] bg-maroon-primary text-white shadow-lg">
+      <nav className="fixed top-0 left-0 right-0 z-60 bg-maroon-primary text-white shadow-lg">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
           {/* Mobile Menu Toggle */}
           <button
@@ -116,7 +130,7 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* Search Bar (Desktop) */}
+          {/* Search Bar */}
           <div
             className="flex-1 max-w-md relative hidden md:block"
             ref={searchRef}
@@ -137,7 +151,7 @@ export default function Navbar() {
                 )}
               </div>
             </div>
-            {/* ... dropdown results code same as before ... */}
+            {/* Search Dropdown would go here */}
           </div>
 
           {/* Icons Area */}
@@ -152,19 +166,87 @@ export default function Navbar() {
                 </span>
               )}
             </Link>
-            <User className="h-6 w-6 hidden sm:block hover:text-thrift-gold transition cursor-pointer" />
+
+            {/* Auth Section */}
+            {mounted && (
+              <div className="relative">
+                {isPending ? (
+                  <Loader2 className="h-5 w-5 animate-spin text-white/50" />
+                ) : session ? (
+                  /* Logged In Dropdown */
+                  <div className="relative group">
+                    <button className="flex items-center gap-2 focus:outline-none">
+                      <div className="h-9 w-9 bg-white/10 rounded-full flex items-center justify-center group-hover:bg-thrift-gold group-hover:text-maroon-primary transition">
+                        <UserIcon className="h-5 w-5" />
+                      </div>
+                      <div className="hidden xl:flex flex-col items-start leading-none">
+                        <span className="text-[10px] font-bold uppercase text-thrift-gold mb-1">
+                          {session.user.role}
+                        </span>
+                        <span className="text-xs font-medium max-w-20 truncate">
+                          {session.user.name}
+                        </span>
+                      </div>
+                    </button>
+
+                    {/* Dropdown Menu */}
+                    <div className="absolute right-0 mt-2 w-52 bg-white rounded-sm shadow-2xl py-2 text-zinc-800 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-100">
+                      <div className="px-4 py-3 border-b border-zinc-100">
+                        <p className="text-sm font-bold truncate">
+                          {session.user.name}
+                        </p>
+                        <p className="text-[10px] text-zinc-500 truncate">
+                          {session.user.email}
+                        </p>
+                      </div>
+
+                      <Link
+                        href="/profile"
+                        className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-zinc-50 transition"
+                      >
+                        <UserCircle className="h-4 w-4" /> My Profile
+                      </Link>
+
+                      {session.user.role === "admin" && (
+                        <Link
+                          href="/admin"
+                          className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-zinc-50 text-maroon-primary font-bold transition"
+                        >
+                          <Settings className="h-4 w-4" /> Admin Panel
+                        </Link>
+                      )}
+
+                      <button
+                        onClick={handleSignOut}
+                        className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition border-t border-zinc-100 mt-1"
+                      >
+                        <LogOut className="h-4 w-4" /> Sign Out
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  /* Logged Out State */
+                  <Link
+                    href="/login"
+                    className="text-xs font-bold uppercase tracking-tighter border-2 border-white px-4 py-1.5 hover:bg-white hover:text-maroon-primary transition"
+                  >
+                    Login
+                  </Link>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </nav>
 
       {/* Mobile Menu Overlay */}
       <div
-        className={`fixed inset-0 z-[55] bg-maroon-primary transition-transform duration-300 ease-in-out lg:hidden ${
+        className={`fixed inset-0 z-55 bg-maroon-primary transition-transform duration-500 ease-in-out lg:hidden ${
           isMobileMenuOpen ? "translate-y-0" : "-translate-y-full"
         }`}
-        style={{ paddingTop: "64px" }} // Height of navbar
+        style={{ paddingTop: "64px" }}
       >
-        <div className="flex flex-col p-8 gap-6 text-2xl font-black italic uppercase tracking-tighter">
+        <div className="flex flex-col p-8 gap-6 text-2xl font-black italic uppercase tracking-tighter h-full">
           {navLinks.map((link) => (
             <Link
               key={link.href}
@@ -174,10 +256,39 @@ export default function Navbar() {
               {link.name}
             </Link>
           ))}
-          <hr className="border-white/10 my-4" />
-          <div className="flex gap-6">
-            <Heart className="h-8 w-8 text-white" />
-            <User className="h-8 w-8 text-white" />
+
+          <div className="mt-auto pb-12">
+            <hr className="border-white/10 my-6" />
+            {session ? (
+              <div className="space-y-6">
+                <div className="flex items-center gap-4">
+                  <div className="h-12 w-12 bg-thrift-gold rounded-full flex items-center justify-center text-maroon-primary text-xl font-bold">
+                    {session.user.name[0]}
+                  </div>
+                  <div>
+                    <p className="text-white normal-case font-bold">
+                      {session.user.name}
+                    </p>
+                    <p className="text-thrift-gold text-xs tracking-widest">
+                      {session.user.role}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={handleSignOut}
+                  className="text-red-400 text-3xl font-black italic uppercase"
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <Link
+                href="/login"
+                className="text-thrift-gold text-3xl font-black italic uppercase"
+              >
+                Login
+              </Link>
+            )}
           </div>
         </div>
       </div>

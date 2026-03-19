@@ -38,6 +38,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "sonner";
 import RecentSoldToast from "@/components/cart/RecentSoldToast";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
 import AIStylist from "@/components/ai/AiStylist";
@@ -53,6 +54,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_APP_URL || "https://lyvera-thrift-ihvf.vercel.app",
+  ),
   title: {
     default: "Lyvera Thrift | Curated Vintage & Sustainable Fashion",
     template: "%s | Lyvera Thrift", // This allows sub-pages to have titles like "Denim | Lyvera Thrift"
@@ -112,6 +116,7 @@ export default function RootLayout({
         <RecentSoldToast />
         <WhatsAppFloat />
         <AIStylist />
+        <Toaster position="top-center" richColors />
       </body>
     </html>
   );

@@ -1,33 +1,3 @@
-// import { google } from "@ai-sdk/google";
-// import { streamText, Output } from "ai"; // Use streamText + Output
-// import { productSuggestionSchema } from "@/lib/schema";
-
-// export async function POST(req: Request) {
-//   const { imageUrl } = await req.json();
-
-//   const result = await streamText({
-//     // model: google("gemini-1.5-pro-002"),
-//     model: google("gemini-3.1-flash-lite-preview"),
-//     // This replaces streamObject
-//     output: Output.object({ schema: productSuggestionSchema }),
-//     messages: [
-//       {
-//         role: "user",
-//         content: [
-//           {
-//             type: "text",
-//             text: "Analyze this fashion item for Lyvera thrift store. Provide name, description, size, and price in KES.",
-//           },
-//           { type: "image", image: new URL(imageUrl) },
-//         ],
-//       },
-//     ],
-//   });
-
-//   // For useObject on the frontend, we use toTextStreamResponse
-//   return result.toTextStreamResponse();
-// }
-
 import { google } from "@ai-sdk/google";
 import { streamText, Output } from "ai"; // Use streamText + Output
 import { productSuggestionSchema } from "@/lib/schema";
