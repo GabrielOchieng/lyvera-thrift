@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+
 import {
   Trash2,
   ShoppingBag,
@@ -176,8 +175,6 @@ export default function CartPage() {
 
   return (
     <main className="min-h-screen bg-zinc-50">
-      <Navbar />
-
       <div className="pt-32 pb-20 px-6 max-w-6xl mx-auto">
         <div className="flex items-center gap-4 mb-10">
           <Link
@@ -186,8 +183,8 @@ export default function CartPage() {
           >
             <ArrowLeft className="h-5 w-5 text-zinc-600" />
           </Link>
-          <h1 className="text-4xl font-black italic uppercase tracking-tighter text-maroon-primary">
-            Your Bag ({cart.length})
+          <h1 className="text-2xl font-black  uppercase tracking-tighter text-maroon-primary">
+            Your Cart ({cart.length})
           </h1>
         </div>
 
@@ -244,19 +241,19 @@ export default function CartPage() {
 
             <div className="lg:col-span-1">
               <div className="bg-white p-8 rounded-[2.5rem] border border-zinc-200 shadow-xl sticky top-24">
-                <h2 className="text-xl font-black uppercase italic tracking-tighter mb-6 text-zinc-400">
+                <h2 className="text-xl font-black uppercase  tracking-tighter mb-6 text-zinc-400">
                   Summary
                 </h2>
-                <div className="flex justify-between text-2xl font-black italic uppercase mb-8">
+                <div className="flex justify-between text-2xl font-black  uppercase mb-8">
                   <span>Total</span>
-                  <span className="text-maroon-primary">
+                  <span className="text-maroon-primary italic">
                     KES {total.toLocaleString()}
                   </span>
                 </div>
                 <button
                   onClick={() => setIsModalOpen(true)}
                   disabled={hasSoldOutItems}
-                  className={`w-full py-5 rounded-2xl font-black uppercase italic tracking-tighter transition-all shadow-lg active:scale-95 ${hasSoldOutItems ? "bg-zinc-100 text-zinc-400 cursor-not-allowed" : "bg-maroon-primary text-white hover:bg-thrift-gold hover:text-maroon-primary"}`}
+                  className={`w-full py-3 rounded-2xl font-black uppercase cursor-pointer tracking-tighter transition-all shadow-lg active:scale-95 ${hasSoldOutItems ? "bg-zinc-100 text-zinc-400 cursor-not-allowed" : "bg-maroon-primary text-white hover:bg-thrift-gold hover:text-maroon-primary"}`}
                 >
                   {hasSoldOutItems ? "Remove Sold Items" : "Checkout"}
                 </button>
@@ -278,8 +275,6 @@ export default function CartPage() {
           </div>
         )}
       </div>
-
-      <Footer />
 
       {/* --- M-PESA STK MODAL --- */}
       {isModalOpen && (

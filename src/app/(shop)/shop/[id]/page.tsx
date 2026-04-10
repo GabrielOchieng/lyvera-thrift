@@ -106,7 +106,7 @@ export default async function ProductDetailPage({
             </div>
           </div>
 
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col md:flex-row  gap-3">
             <AddToCartButton
               product={{
                 id: product.id,
@@ -123,7 +123,7 @@ export default async function ProductDetailPage({
                 href={whatsappOrderLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full bg-[#25D366] text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#128C7E] transition-all shadow-lg hover:shadow-green-200"
+                className="w-full bg-[#25D366] text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#128C7E] transition-all shadow-lg hover:shadow-green-200"
               >
                 <MessageCircle className="w-5 h-5" />
                 BUY VIA WHATSAPP
