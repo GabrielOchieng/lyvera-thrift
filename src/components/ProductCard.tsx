@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, ArrowRight } from "lucide-react";
 import { useCart } from "../../store/useCart";
+import { useRouter } from "next/navigation"; // Import the router
 
 interface ProductCardProps {
   id: string;
@@ -26,31 +27,31 @@ export default function ProductCard({
   const addToCart = useCart((state) => state.addToCart);
   const cart = useCart((state) => state.cart);
   const isInCart = cart.some((item) => item.id === id);
+  const router = useRouter(); // Initialize router
 
-  const handleAdd = (e: React.MouseEvent) => {
-    // This stops the click from "bubbling up" to the Link
+  const handleButtonClick = (e: React.MouseEvent) => {
+    // Stop the click from triggering the parent <Link> (product detail page)
     e.preventDefault();
     e.stopPropagation();
+
     if (isSold) return;
-    addToCart({ id, name, price, image, size });
+
+    if (isInCart) {
+      // If already in cart, take them to the cart page
+      router.push("/cart");
+    } else {
+      // Otherwise, add to cart
+      addToCart({ id, name, price, image, size });
+    }
   };
 
   return (
     <div className="group relative flex flex-col">
-      {/* The Main Link Wrapper for the Product Details */}
       <Link href={`/shop/${id}`} className="block">
-        <div className="relative aspect-3/4 overflow-hidden rounded-2xl bg-zinc-100 border border-zinc-200">
-          {/* <img
-            src={image || "https://placehold.co/400x533"}
-            alt={name}
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-          /> */}
-
+        <div className="relative aspect-3/2 overflow-hidden rounded-2xl bg-zinc-100 border border-zinc-200">
           <img
             src={image}
             alt={name}
-            // This tells the browser NOT to send your website URL to TikTok.
-            // This is the specific fix for the '403 Forbidden' error.
             referrerPolicy="no-referrer"
             className="w-full h-full object-cover"
             onError={(e) => {
@@ -58,7 +59,7 @@ export default function ProductCard({
                 "https://placehold.co/400x533?text=Lyvera+Piece";
             }}
           />
-          {/* Sold Out Overlay */}
+
           {isSold && (
             <div className="absolute inset-0 bg-white/60 backdrop-blur-[2px] flex items-center justify-center z-10">
               <span className="bg-zinc-900 text-white px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">
@@ -66,24 +67,39 @@ export default function ProductCard({
               </span>
             </div>
           )}
-          {/* Size Badge */}
+
           <div className="absolute top-3 left-3 z-10">
             <span className="bg-white/90 backdrop-blur px-2 py-1 rounded-lg text-[10px] font-bold text-zinc-900 shadow-sm uppercase">
               {size}
             </span>
           </div>
-          {/* Hover Add to Cart Button */}
+
           {!isSold && (
             <button
-              onClick={handleAdd}
+              onClick={handleButtonClick}
               className={`absolute cursor-pointer bottom-4 left-4 right-4 py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all transform translate-y-16 group-hover:translate-y-0 shadow-2xl z-20 ${
                 isInCart
-                  ? "bg-green-600 text-white"
+                  ? "bg-zinc-900 text-white ring-2 ring-white/20" // Darker, "Premium" look for added items
                   : "bg-maroon-primary text-white hover:bg-thrift-gold hover:text-black"
               }`}
             >
-              <ShoppingCart className="h-4 w-4" />
-              {isInCart ? "IN BAG" : "ADD TO BAG"}
+              {isInCart ? (
+                <div className="flex items-center justify-between w-full px-4">
+                  <span className="flex items-center gap-2 text-[10px] opacity-70">
+                    <div className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
+                    IN CART
+                  </span>
+                  <span className="flex items-center gap-1 text-thrift-gold">
+                    GO TO CART
+                    <ArrowRight className="h-3 w-3" />
+                  </span>
+                </div>
+              ) : (
+                <>
+                  <ShoppingCart className="h-4 w-4" />
+                  ADD TO CART
+                </>
+              )}
             </button>
           )}
         </div>
@@ -95,7 +111,7 @@ export default function ProductCard({
           <h3 className="text-sm font-bold text-zinc-900 line-clamp-1 uppercase">
             {name}
           </h3>
-          <p className="text-lg font-black text-zinc-900 italic">
+          <p className="text-sm font-black text-zinc-900">
             KES {price.toLocaleString()}
           </p>
         </div>

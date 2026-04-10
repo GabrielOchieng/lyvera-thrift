@@ -11,7 +11,7 @@ const SLIDES = [
     title: "THE SUSTAINABLE ARCHIVE",
     subtitle:
       "Consciously sourced. Timelessly styled. Discover one-of-one pieces salvaged for the modern wardrobe.",
-    cta: "EXPLORE THE ARCHIVE",
+    cta: "VIEW NEW ARRIVALS",
     link: "/shop",
     label: "NEW CURATION",
   },
@@ -31,7 +31,7 @@ const SLIDES = [
     title: "BEYOND THE TRENDS",
     subtitle:
       "Because style shouldn't cost the Earth. Hand-picked treasures waiting for their second life.",
-    cta: "SHOP ALL PIECES",
+    cta: "VIEW NEW ARRIVALS",
     link: "/shop",
     label: "LYVERA EDIT",
   },
@@ -87,10 +87,15 @@ export default function HeroSlider() {
             <div className="animate-in fade-in slide-in-from-bottom-10 duration-1000">
               <Link
                 href={slide.link}
-                className="group relative inline-flex items-center justify-center px-10 py-4 overflow-hidden rounded-full border-2 border-white/20 transition-all hover:border-thrift-gold"
+                className="group relative inline-flex items-center justify-center px-10 py-4 overflow-hidden rounded-full transition-all duration-300 shadow-[0_0_20px_rgba(0,0,0,0.3)] hover:shadow-white/20"
               >
+                {/* The Primary Background - Gold/Yellow for high visibility */}
+                <div className="absolute inset-0 bg-thrift-gold transition-transform duration-300 ease-out group-hover:scale-105"></div>
+
+                {/* The Hover Overlay - Now Wipes WHITE over the gold */}
                 <div className="absolute inset-0 w-0 bg-white transition-all duration-400 ease-out group-hover:w-full"></div>
-                <span className="relative text-white font-black uppercase tracking-widest text-xs group-hover:text-zinc-900">
+
+                <span className="relative text-zinc-900 font-black uppercase tracking-widest text-xs transition-colors duration-300">
                   {slide.cta}
                 </span>
               </Link>

@@ -58,10 +58,10 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
       {product.isSold
         ? "SOLD OUT"
         : isInCart
-          ? "IN YOUR BAG"
+          ? "IN YOUR CART"
           : added
             ? "ADDED!"
-            : "ADD TO SHOPPING BAG"}
+            : "ADD TO SHOPPING CART"}
     </button>
   );
 }
