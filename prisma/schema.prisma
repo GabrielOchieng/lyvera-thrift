@@ -12,8 +12,8 @@ model User {
   email         String    @unique
   emailVerified Boolean   @default(false)
   image         String?
-  role          String    @default("user") // Authorization: "user" or "admin"
-  orders        Order[]   // Adds the relation to the User side
+  role          String    @default("user")
+  orders        Order[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
@@ -37,24 +37,24 @@ model Session {
 }
 
 model Account {
-  id                    String    @id @default(cuid())
-  userId                String
-  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  accountId             String
-  providerId            String
-  accessToken           String?
-  refreshToken          String?
-  idToken               String?
-  expiresAt             DateTime?
-  password              String?   // For Email/Password auth
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
+  id           String    @id @default(cuid())
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accountId    String
+  providerId   String
+  accessToken  String?
+  refreshToken String?
+  idToken      String?
+  expiresAt    DateTime?
+  password     String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 
   @@map("account")
 }
 
 model Verification {
-  id         String   @id @default(cuid())
+  id         String    @id @default(cuid())
   identifier String
   value      String
   expiresAt  DateTime
@@ -65,20 +65,23 @@ model Verification {
 }
 
 model Product {
-  id          String   @id @default(cuid())
+  id          String      @id @default(cuid())
   name        String
   description String?
   price       Int
   size        String
   images      String[]
-  isSold      Boolean  @default(false)
-  stock       Int      @default(1)
+  isSold      Boolean     @default(false)
+  stock       Int         @default(1)
   categoryId  String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  source      String   @default("TIKTOK")
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  source      String      @default("TIKTOK")
   videoUrl    String?
-  category    Category @relation(fields: [categoryId], references: [id])
+  category    Category    @relation(fields: [categoryId], references: [id])
+  
+  // ✅ ADDED: This allows you to check which OrderItems this product belongs to
+  orderItems  OrderItem[]
 
   @@index([categoryId])
   @@index([isSold])
@@ -91,26 +94,31 @@ model Category {
 }
 
 model Order {
-  id              String      @id @default(cuid())
-  userId          String?     // '?' means it can be null (for guests)
-  user            User?       @relation(fields: [userId], references: [id])
-  createdAt       DateTime    @default(now())
-  customerName    String
-  customerPhone   String
-  deliveryAddress String
-  mpesaCode       String      @unique
-  totalAmount     Float
-  status          String      @default("PENDING")
-  items           OrderItem[]
+  id                String      @id @default(cuid())
+  userId            String?
+  user              User?       @relation(fields: [userId], references: [id])
+  createdAt         DateTime    @default(now())
+  customerName      String
+  customerPhone     String
+  deliveryAddress   String
+  mpesaCode         String      @unique
+  checkoutRequestId String?     @unique
+  totalAmount       Float
+  status            String      @default("PENDING") // PENDING, VERIFIED, CANCELLED
+  items             OrderItem[]
+  phone String @default("0000000000")
 }
 
 model OrderItem {
-  id        String @id @default(cuid())
+  id        String  @id @default(cuid())
   orderId   String
   productId String
   name      String
   price     Float
   size      String
   image     String
-  order     Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  
+  // ✅ ADDED: This links the OrderItem back to the actual Product record
+  product   Product @relation(fields: [productId], references: [id])
 }

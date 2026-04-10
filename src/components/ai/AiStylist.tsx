@@ -102,7 +102,7 @@ export default function AIStylist() {
 
       {/* --- CHAT WINDOW --- */}
       {isOpen && (
-        <div className="fixed bottom-24 right-6 w-85 md:w-100 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.2)] rounded-3xl overflow-hidden border border-zinc-200 flex flex-col z-50 animate-in fade-in zoom-in-95 slide-in-from-bottom-10 duration-300">
+        <div className="fixed bottom-4 2xl:bottom-24 right-6 w-85 md:w-100 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.2)] rounded-3xl overflow-hidden border border-zinc-200 flex flex-col z-50 animate-in fade-in zoom-in-95 slide-in-from-bottom-10 duration-300">
           {/* Header */}
           <div className="bg-zinc-900 text-white p-5 flex justify-between items-center border-b border-[#800000]/30">
             <div className="flex items-center gap-2">
@@ -133,7 +133,7 @@ export default function AIStylist() {
           {/* Chat History */}
           <div
             ref={scrollRef}
-            className="h-112.5 p-4 overflow-y-auto space-y-4 bg-zinc-50/50 scroll-smooth"
+            className="h-82 2xl:h-112.5 p-4 overflow-y-auto space-y-4 bg-zinc-50/50 scroll-smooth"
           >
             {messages.map((m, i) => (
               <div
