@@ -98,11 +98,30 @@ export async function POST(req: Request) {
             )
             .end(Buffer.from(imageBuffer));
         }),
+        // genAI
+        //   .getGenerativeModel({ model: "gemini-3.1-flash-lite-preview" })
+        //   .generateContent([
+        //     `You are a fashion expert for 'Lyvera'. Based on the caption "${caption}" and image, return JSON ONLY:
+        //     {"name": "...", "price": number, "size": "...", "category": "outerwear/tops/bottoms/accessories", "desc": "one sentence hype"}`,
+        //     { inlineData: { data: base64Image, mimeType: "image/jpeg" } },
+        //   ]),
+
+        // Replace your existing genAI.getGenerativeModel call with this:
         genAI
           .getGenerativeModel({ model: "gemini-3.1-flash-lite-preview" })
           .generateContent([
-            `You are a fashion expert for 'Lyvera'. Based on the caption "${caption}" and image, return JSON ONLY:
-            {"name": "...", "price": number, "size": "...", "category": "outerwear/tops/bottoms/accessories", "desc": "one sentence hype"}`,
+            `You are a fashion expert for 'Lyvera'. 
+    Extract the following from the user caption: "${caption}" and the image.
+    If price or size are missing in the caption, use "TBD" or "Contact for info".
+    
+    Return JSON ONLY:
+    {
+      "name": "Creative title based on image",
+      "price": "Extract from caption or set 0",
+      "size": "Extract from caption or set 'N/A'",
+      "category": "Choose ONLY ONE: 'outerwear', 'tops', 'bottoms', or 'accessories'. Look closely at the image.",
+      "desc": "One sentence hype"
+    }`,
             { inlineData: { data: base64Image, mimeType: "image/jpeg" } },
           ]),
       ]);
