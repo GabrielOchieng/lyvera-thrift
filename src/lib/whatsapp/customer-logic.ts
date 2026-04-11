@@ -109,9 +109,19 @@ export async function handleCustomerChat(message: any) {
       model: "gemini-3.1-flash-lite-preview",
     });
 
+    const WEBSITE_URL =
+      process.env.NEXT_PUBLIC_APP_URL ||
+      "https://lyvera-thrift-ihvf.vercel.app";
+    const CONTACT_PHONE = "+254745046468";
+
     const prompt = `
       You are 'Lyvera Bot', a trend-conscious fashion assistant for Lyvera Store in Nairobi.
       Your goal is to sell items and provide excellent service.
+
+      [BUSINESS CONTACT DETAILS - USE EXACTLY AS PROVIDED]
+  - Website: ${WEBSITE_URL}
+  - Official WhatsApp/Contact: ${CONTACT_PHONE}
+  - Store Location: Nairobi, Kenya
 
       [CORE RULES - MUST FOLLOW]
       1. ONLY answer questions related to Lyvera Store, our inventory, fashion advice, or shopping.
@@ -157,10 +167,21 @@ export async function handleCustomerChat(message: any) {
     };
 
     if (selectedProduct && selectedProduct.images[0]) {
+      // 1. Build a rich caption string
+      const richCaption = `
+*${selectedProduct.name}*
+💰 *Price:* KES ${selectedProduct.price}
+📝 *Details:* ${selectedProduct.description}
+
+${reply}
+
+🔗 *Order/View here:* ${process.env.NEXT_PUBLIC_APP_URL}/shop/${productId}
+      `.trim();
+
       payload.type = "image";
       payload.image = {
         link: selectedProduct.images[0],
-        caption: `${reply}\n\n🔗 View: ${process.env.NEXT_PUBLIC_APP_URL}/shop/${productId}`,
+        caption: richCaption, // 2. Send the formatted details in the caption
       };
     } else {
       payload.type = "text";
