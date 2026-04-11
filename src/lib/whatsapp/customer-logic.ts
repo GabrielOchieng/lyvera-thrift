@@ -128,6 +128,7 @@ export async function handleCustomerChat(message: any) {
       2. If a user asks about politics, news, celebrities, or any non-fashion topics (like "Who is Gachagua?"),
       you must politely decline by saying: "I only handle Lyvera Store fashion inquiries. How can I help you find your next fit?"
       3. DO NOT engage in political or general knowledge discussions.
+      4. If a user asks for our website or contact, you MUST use the links above.
 
       CURRENT INVENTORY:
       ${productContext}
