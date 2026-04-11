@@ -122,3 +122,12 @@ model OrderItem {
   // ✅ ADDED: This links the OrderItem back to the actual Product record
   product   Product @relation(fields: [productId], references: [id])
 }
+
+// schema.prisma
+model UserSession {
+  phone       String   @id
+  state       String   @default("IDLE") // IDLE, BROWSING, ORDERING, PROVIDING_DETAILS
+  cartItems   Json?    // Stores temporary list of product IDs
+  lastOrderId String?
+  updatedAt   DateTime @updatedAt
+}

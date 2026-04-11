@@ -38,34 +38,35 @@
 //   return new Response("OK", { status: 200 });
 // }
 
-import { processAdminImage } from "@/lib/whatsapp/admin-logic";
-import { handleCheckoutConfirmation } from "@/lib/whatsapp/checkout-logic";
+// src/app/api/webhook/whatsapp/route.ts
 import { handleCustomerChat } from "@/lib/whatsapp/customer-logic";
+
+import { handleCheckoutFlow } from "@/lib/whatsapp/checkout-logic";
+import prisma from "../../../../../lib/prisma";
+import { handleOrderSelection } from "@/lib/whatsapp/order-logic";
 
 export async function POST(req: Request) {
   const body = await req.json();
-  const value = body.entry?.[0]?.changes?.[0]?.value;
-  const message = value?.messages?.[0];
-
+  const message = body.entry?.[0]?.changes?.[0]?.value?.messages?.[0];
   if (!message) return new Response("OK", { status: 200 });
 
-  const text = message.text?.body?.toLowerCase() || "";
   const from = message.from;
 
-  // 1. ADMIN UPLOAD LOGIC
-  const adminPhones = process.env.ADMIN_PHONES?.split(",") || [];
-  if (adminPhones.includes(from) && message.image) {
-    await processAdminImage(message);
-    return new Response("OK", { status: 200 });
+  // 1. Get or Create Session
+  let session = await prisma.userSession.findUnique({ where: { phone: from } });
+  if (!session) {
+    session = await prisma.userSession.create({
+      data: { phone: from, state: "IDLE" },
+    });
   }
 
-  // 2. CHECKOUT FLOW LOGIC ("Traffic Cop" for order commands)
-  if (text.includes("order #")) {
-    await handleCheckoutConfirmation(message);
-    return new Response("OK", { status: 200 });
+  // 2. State-Based Routing
+  if (session.state === "ORDERING") {
+    return await handleOrderSelection(message, session);
+  } else if (session.state === "PROVIDING_DETAILS") {
+    return await handleCheckoutFlow(message, session);
+  } else {
+    // Default to AI Sales Agent
+    return await handleCustomerChat(message);
   }
-
-  // 3. DEFAULT AI SALES CHAT
-  await handleCustomerChat(message);
-  return new Response("OK", { status: 200 });
 }
