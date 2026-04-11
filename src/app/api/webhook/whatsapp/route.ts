@@ -136,7 +136,7 @@ export async function POST(req: Request) {
       const product = await prisma.product.create({
         data: {
           name: data.name,
-          price: data.price,
+          price: parseInt(data.price) || 0,
           size: data.size,
           description: data.desc,
           images: [(uploadResponse as any).secure_url],
