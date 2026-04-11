@@ -46,27 +46,35 @@ import prisma from "../../../../../lib/prisma";
 import { handleOrderSelection } from "@/lib/whatsapp/order-logic";
 
 export async function POST(req: Request) {
-  const body = await req.json();
-  const message = body.entry?.[0]?.changes?.[0]?.value?.messages?.[0];
-  if (!message) return new Response("OK", { status: 200 });
+  try {
+    const body = await req.json();
+    const message = body.entry?.[0]?.changes?.[0]?.value?.messages?.[0];
 
-  const from = message.from;
+    // 1. ALWAYS return 200 immediately for empty messages
+    if (!message) return new Response("OK", { status: 200 });
 
-  // 1. Get or Create Session
-  let session = await prisma.userSession.findUnique({ where: { phone: from } });
-  if (!session) {
-    session = await prisma.userSession.create({
-      data: { phone: from, state: "IDLE" },
+    const from = message.from;
+    const session = await prisma.userSession.findUnique({
+      where: { phone: from },
     });
-  }
 
-  // 2. State-Based Routing
-  if (session.state === "ORDERING") {
-    return await handleOrderSelection(message, session);
-  } else if (session.state === "PROVIDING_DETAILS") {
-    return await handleCheckoutFlow(message, session);
-  } else {
-    // Default to AI Sales Agent
-    return await handleCustomerChat(message);
+    // 2. Wrap your logic in logic branches that ALL have returns
+    if (session?.state === "ORDERING") {
+      await handleOrderSelection(message, session);
+      return new Response("OK", { status: 200 }); // RETURN HERE
+    }
+
+    if (session?.state === "PROVIDING_DETAILS") {
+      await handleCheckoutFlow(message, session);
+      return new Response("OK", { status: 200 }); // RETURN HERE
+    }
+
+    // Default case
+    await handleCustomerChat(message);
+    return new Response("OK", { status: 200 }); // RETURN HERE
+  } catch (error) {
+    console.error("Webhook Error:", error);
+    // 3. Even if the code crashes, return 200 so WhatsApp stops retrying
+    return new Response("OK", { status: 200 });
   }
 }
