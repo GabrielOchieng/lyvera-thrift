@@ -117,7 +117,7 @@ export async function POST(req: Request) {
     Return JSON ONLY:
     {
       "name": "Creative title based on image",
-      "price": "Extract from caption or set 0",
+      "price": "Extract from caption or set 500",
       "size": "Extract from caption or set 'N/A'",
       "category": "Choose ONLY ONE: 'outerwear', 'tops', 'bottoms', or 'accessories'. Look closely at the image.",
       "desc": "One sentence hype"
