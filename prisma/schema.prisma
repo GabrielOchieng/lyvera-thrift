@@ -123,11 +123,12 @@ model OrderItem {
   product   Product @relation(fields: [productId], references: [id])
 }
 
-// schema.prisma
 model UserSession {
   phone       String   @id
-  state       String   @default("IDLE") // IDLE, BROWSING, ORDERING, PROVIDING_DETAILS
-  cartItems   Json?    // Stores temporary list of product IDs
+  state       String   @default("IDLE")
+  userName    String?  // <--- ADD THIS
+  location    String?  // <--- ADD THIS
+  cartItems   Json?
   lastOrderId String?
   updatedAt   DateTime @updatedAt
 }
