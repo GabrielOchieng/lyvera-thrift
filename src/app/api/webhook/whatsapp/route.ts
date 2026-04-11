@@ -196,6 +196,28 @@ export async function GET(req: Request) {
   return new Response("Forbidden", { status: 403 });
 }
 
+// export async function POST(req: Request) {
+//   const body = await req.json();
+//   const value = body.entry?.[0]?.changes?.[0]?.value;
+//   const message = value?.messages?.[0];
+
+//   if (!message) return new Response("OK", { status: 200 });
+
+//   const adminPhones = process.env.ADMIN_PHONES?.split(",") || [];
+//   const isAdmin = adminPhones.includes(message.from);
+
+//   // ROUTER LOGIC:
+//   // 1. Admin + Image = Admin Uploader
+//   if (isAdmin && message.image) {
+//     await processAdminImage(message);
+//     return new Response("OK", { status: 200 });
+//   }
+
+//   // 2. Everything else = Customer Chat Bot
+//   await handleCustomerChat(message);
+//   return new Response("OK", { status: 200 });
+// }
+
 export async function POST(req: Request) {
   const body = await req.json();
   const value = body.entry?.[0]?.changes?.[0]?.value;
@@ -206,14 +228,17 @@ export async function POST(req: Request) {
   const adminPhones = process.env.ADMIN_PHONES?.split(",") || [];
   const isAdmin = adminPhones.includes(message.from);
 
-  // ROUTER LOGIC:
-  // 1. Admin + Image = Admin Uploader
+  // LOGGING: Add this to see what's happening in your Vercel logs
+  console.log(`Incoming message from ${message.from}. Admin: ${isAdmin}`);
+
+  // Admin Upload Logic
   if (isAdmin && message.image) {
     await processAdminImage(message);
     return new Response("OK", { status: 200 });
   }
 
-  // 2. Everything else = Customer Chat Bot
+  // Customer Chat Logic (This is what you're not seeing)
+  // Ensure we are passing the message object here
   await handleCustomerChat(message);
   return new Response("OK", { status: 200 });
 }
