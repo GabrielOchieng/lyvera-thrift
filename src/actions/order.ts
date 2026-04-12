@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import prisma from "../../lib/prisma";
+import { sendWhatsApp } from "@/lib/whatsapp/customer-logic";
 
 /**
  * HELPER: SECURE SESSION CHECK
@@ -70,6 +71,39 @@ export async function createOrder(data: any) {
 
       return newOrder;
     });
+
+    const adminPhones = process.env.ADMIN_PHONES?.split(",") || [];
+    const BASE_URL =
+      process.env.NEXT_PUBLIC_APP_URL ||
+      "https://lyvera-thrift-ihvf.vercel.app";
+
+    const orderLink = `${BASE_URL}/admin/orders`;
+
+    const previewImage =
+      items[0]?.image || "https://placeholder-url.com/default.jpg";
+    const adminMessage = `🔔 *New Order Received!*
+    
+    *Order ID:* ${result.id}
+    *Customer:* ${name}
+    *Phone:* ${phone}
+    *Location:* ${location}
+    *Total:* KES ${total}
+    *Items:* ${items.map((i: any) => i.name).join(", ")}
+    
+    *View in Dashboard:* ${orderLink}
+
+    Check the admin dashboard to confirm.`;
+
+    for (const phone of adminPhones) {
+      try {
+        await sendWhatsApp(phone.trim(), {
+          image: previewImage,
+          caption: adminMessage,
+        });
+      } catch (error) {
+        console.error(`Failed to notify admin ${phone}:`, error);
+      }
+    }
 
     revalidatePath("/admin/orders");
     revalidatePath("/shop");

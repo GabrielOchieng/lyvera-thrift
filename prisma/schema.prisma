@@ -139,3 +139,16 @@ model ProcessedMessage {
 }
 
 
+model ChatSession {
+  id        String   @id @default(uuid())
+  phone     String   @unique
+  state     String   @default("browsing")
+  cart      Json     @default("[]")
+
+  name      String?
+  phoneInput String?
+  location  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
