@@ -132,3 +132,10 @@ model UserSession {
   lastOrderId String?
   updatedAt   DateTime @updatedAt
 }
+
+model ProcessedMessage {
+  id        String   @id
+  createdAt DateTime @default(now())
+}
+
+

@@ -1,40 +1,168 @@
+// import { GoogleGenerativeAI } from "@google/generative-ai";
+// import prisma from "../../../lib/prisma";
+
+// const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+
+// export async function handleCustomerChat(message: any) {
+//   const from = message.from;
+//   const userText = message.text?.body || "Hello";
+//   const messageId = message.id;
+
+//   const products = await prisma.product.findMany({
+//     where: { isSold: false },
+//     take: 10,
+//     select: {
+//       id: true,
+//       name: true,
+//       price: true,
+//       description: true,
+//       images: true,
+//     },
+//   });
+
+//   const productContext = products
+//     .map(
+//       (p) =>
+//         `- [ID: ${p.id}] ${p.name} | KES ${p.price} | Desc: ${p.description}`,
+//     )
+//     .join("\n");
+
+//   const model = genAI.getGenerativeModel({
+//     model: "gemini-3.1-flash-lite-preview",
+//   });
+
+//   const WEBSITE_URL =
+//     process.env.NEXT_PUBLIC_APP_URL || "https://lyvera-thrift-ihvf.vercel.app";
+//   const CONTACT_PHONE = "+254745046468";
+
+//   const prompt = `
+//       You are 'Lyvera Bot', a trend-conscious fashion assistant for Lyvera Store in Nairobi.
+//       Your goal is to sell items and provide excellent service.
+
+//       [BUSINESS CONTACT DETAILS - USE EXACTLY AS PROVIDED]
+//   - Website: ${WEBSITE_URL}
+//   - Official WhatsApp/Contact: ${CONTACT_PHONE}
+//   - Store Location: Nairobi, Kenya
+
+//       [CORE RULES - MUST FOLLOW]
+//       1. ONLY answer questions related to Lyvera Store, our inventory, fashion advice, or shopping.
+//       2. If a user asks about politics, news, celebrities, or any non-fashion topics (like "Who is Gachagua?"),
+//       you must politely decline by saying: "I only handle Lyvera Store fashion inquiries. How can I help you find your next fit?"
+//       3. DO NOT engage in political or general knowledge discussions.
+//       4. If a user asks for our website or contact, you MUST use the links above.
+
+//       CURRENT INVENTORY:
+//       ${productContext}
+
+//       GUIDELINES:
+//       - Tone: Friendly, stylish, and use Kenyan urban slang (e.g., "drip", "tuko na", "fit").
+//       - Advice: If a user asks for something, match them with items from the inventory.
+//       - Deep Links: ALWAYS include the specific product link if recommending an item.
+//       - Brevity: Keep responses short (WhatsApp-friendly).
+//       - Closing: End by inviting them to order or ask more.
+
+//       [OUTPUT FORMAT - REQUIRED]
+//       Return JSON ONLY. No extra text.
+//       {
+//         "reply": "The friendly message with slang and details.",
+//         "productId": "ID_OF_THE_PRODUCT_OR_NULL"
+//       }
+
+//       User Query: "${userText}"
+//     `;
+
+//   const response = await model.generateContent(prompt);
+//   const aiText = response.response
+//     .text()
+//     .replace(/```json|```/g, "")
+//     .trim();
+//   const { reply, productId } = JSON.parse(aiText);
+
+//   const selectedProduct = products.find((p) => p.id === productId);
+
+//   const payload: any = { messaging_product: "whatsapp", to: from };
+
+//   if (selectedProduct && selectedProduct.images[0]) {
+//     payload.type = "image";
+//     payload.image = {
+//       link: selectedProduct.images[0],
+//       caption: `*${selectedProduct.name}*\n💰 Price: ${selectedProduct.price}\n\n${reply}`,
+//     };
+//   } else {
+//     payload.type = "text";
+//     payload.text = { body: reply };
+//   }
+
+//   await fetch(
+//     `https://graph.facebook.com/v21.0/${process.env.WHATSAPP_PHONE_NUMBER_ID}/messages`,
+//     {
+//       method: "POST",
+//       headers: {
+//         Authorization: `Bearer ${process.env.WHATSAPP_TOKEN}`,
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify(payload),
+//     },
+//   );
+// }
+
+// src/lib/whatsapp/customer-logic.ts
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import prisma from "../../../lib/prisma";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
 export async function handleCustomerChat(message: any) {
+  const messageId = message.id;
   const from = message.from;
   const userText = message.text?.body || "Hello";
 
-  const products = await prisma.product.findMany({
-    where: { isSold: false },
-    take: 10,
-    select: {
-      id: true,
-      name: true,
-      price: true,
-      description: true,
-      images: true,
-    },
-  });
+  try {
+    // 1. IDEMPOTENCY CHECK: Have we seen this message before?
+    const alreadyProcessed = await prisma.processedMessage.findUnique({
+      where: { id: messageId },
+    });
 
-  const productContext = products
-    .map(
-      (p) =>
-        `- [ID: ${p.id}] ${p.name} | KES ${p.price} | Desc: ${p.description}`,
-    )
-    .join("\n");
+    if (alreadyProcessed) {
+      console.log(`[IGNORE] Duplicate message detected: ${messageId}`);
+      return;
+    }
 
-  const model = genAI.getGenerativeModel({
-    model: "gemini-3.1-flash-lite-preview",
-  });
+    // 2. MARK AS PROCESSED: Save the ID immediately
+    await prisma.processedMessage.create({
+      data: { id: messageId },
+    });
 
-  const WEBSITE_URL =
-    process.env.NEXT_PUBLIC_APP_URL || "https://lyvera-thrift-ihvf.vercel.app";
-  const CONTACT_PHONE = "+254745046468";
+    // 3. FETCH DATA & AI CONTEXT
+    const products = await prisma.product.findMany({
+      where: { isSold: false },
+      take: 10,
+      select: {
+        id: true,
+        name: true,
+        price: true,
+        description: true,
+        images: true,
+      },
+    });
 
-  const prompt = `
+    const productContext = products
+      .map(
+        (p) =>
+          `- [ID: ${p.id}] ${p.name} | KES ${p.price} | Desc: ${p.description}`,
+      )
+      .join("\n");
+
+    const model = genAI.getGenerativeModel({
+      model: "gemini-3.1-flash-lite-preview",
+    });
+
+    const WEBSITE_URL =
+      process.env.NEXT_PUBLIC_APP_URL ||
+      "https://lyvera-thrift-ihvf.vercel.app";
+    const CONTACT_PHONE = "+254745046468";
+
+    const prompt = `
       You are 'Lyvera Bot', a trend-conscious fashion assistant for Lyvera Store in Nairobi.
       Your goal is to sell items and provide excellent service.
 
@@ -70,37 +198,45 @@ export async function handleCustomerChat(message: any) {
       User Query: "${userText}"
     `;
 
-  const response = await model.generateContent(prompt);
-  const aiText = response.response
-    .text()
-    .replace(/```json|```/g, "")
-    .trim();
-  const { reply, productId } = JSON.parse(aiText);
+    // 4. GENERATE & PARSE
+    const response = await model.generateContent(prompt);
+    const aiText = response.response
+      .text()
+      .replace(/```json|```/g, "")
+      .trim();
+    const { reply, productId } = JSON.parse(aiText);
 
-  const selectedProduct = products.find((p) => p.id === productId);
+    // 5. SEND RESPONSE
+    const selectedProduct = products.find((p) => p.id === productId);
+    const payload: any = { messaging_product: "whatsapp", to: from };
 
-  const payload: any = { messaging_product: "whatsapp", to: from };
+    if (selectedProduct && selectedProduct.images[0]) {
+      payload.type = "image";
+      payload.image = {
+        link: selectedProduct.images[0],
+        caption: `*${selectedProduct.name}*\n💰 Price: KES ${selectedProduct.price}\n\n${reply}\n\n🔗 View: ${WEBSITE_URL}/shop/${productId}`,
+      };
+    } else {
+      payload.type = "text";
+      payload.text = { body: reply };
+    }
 
-  if (selectedProduct && selectedProduct.images[0]) {
-    payload.type = "image";
-    payload.image = {
-      link: selectedProduct.images[0],
-      caption: `*${selectedProduct.name}*\n💰 Price: ${selectedProduct.price}\n\n${reply}`,
-    };
-  } else {
-    payload.type = "text";
-    payload.text = { body: reply };
-  }
-
-  await fetch(
-    `https://graph.facebook.com/v21.0/${process.env.WHATSAPP_PHONE_NUMBER_ID}/messages`,
-    {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${process.env.WHATSAPP_TOKEN}`,
-        "Content-Type": "application/json",
+    await fetch(
+      `https://graph.facebook.com/v21.0/${process.env.WHATSAPP_PHONE_NUMBER_ID}/messages`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${process.env.WHATSAPP_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
       },
-      body: JSON.stringify(payload),
-    },
-  );
+    );
+  } catch (error) {
+    console.error("🛑 Error in handleCustomerChat:", error);
+    // If the process failed, you may want to delete the record so the user can try again
+    await prisma.processedMessage
+      .delete({ where: { id: messageId } })
+      .catch(() => {});
+  }
 }
