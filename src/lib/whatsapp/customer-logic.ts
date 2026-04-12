@@ -189,6 +189,17 @@ export async function handleCustomerChat(message: any) {
       .map((p) => `- [ID: ${p.id}] ${p.name} | KES ${p.price}`)
       .join("\n");
 
+    const history = await prisma.chatHistory.findMany({
+      where: { phone: from },
+      orderBy: { createdAt: "desc" },
+      take: 5,
+    });
+
+    const historyContext = history
+      .map((h) => `${h.role === "user" ? "User" : "Bot"}: ${h.message}`)
+      .reverse()
+      .join("\n");
+
     const WEBSITE_URL =
       process.env.NEXT_PUBLIC_APP_URL ||
       "https://lyvera-thrift-ihvf.vercel.app";
@@ -205,11 +216,17 @@ export async function handleCustomerChat(message: any) {
            1. ONLY answer questions related to Lyvera Store, our inventory, fashion advice, or shopping.
            2. If a user asks about non-fashion topics, decline politely.
            3. If a user asks for our website or contact, use the links above.
+
       CURRENT INVENTORY:
       ${productContext}
+
       [OUTPUT FORMAT - REQUIRED]
       Return JSON ONLY.
       { "reply": "string", "productId": "string | null", "action": "ADD_TO_CART | VIEW_CART | CHECKOUT | NONE" }
+     
+      HISTORY:
+      ${historyContext}
+      
       User Query: "${userText}"
     `;
 
