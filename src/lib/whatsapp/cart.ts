@@ -8,41 +8,79 @@ export async function getOrCreateSession(phone: string) {
   });
 }
 
+// src/lib/whatsapp/cart.ts
 // export async function addToCart(phone: string, product: any) {
+//   // ADD THIS LOG
+//   console.log(
+//     "DEBUG: Adding product to cart:",
+//     JSON.stringify(product, null, 2),
+//   );
+
 //   const session = await getOrCreateSession(phone);
-//   const cart = (session.cart as any[]) || [];
-//   cart.push(product);
+//   const currentCart = (session.cart as any[]) || [];
+
+//   const normalizedItem = {
+//     id: product.id,
+//     name: product.name,
+//     price: product.price,
+//     image: product.images?.[0] || "https://placeholder-url.com/default.jpg",
+//     size: product.size || "Standard",
+//   };
+
+//   if (currentCart.find((i) => i.id === normalizedItem.id)) return;
 
 //   return await prisma.chatSession.update({
 //     where: { phone },
-//     data: { cart },
+//     data: { cart: [...currentCart, normalizedItem] },
 //   });
 // }
 
-// src/lib/whatsapp/cart.ts
 export async function addToCart(phone: string, product: any) {
-  // ADD THIS LOG
-  console.log(
-    "DEBUG: Adding product to cart:",
-    JSON.stringify(product, null, 2),
-  );
+  if (!product || !product.id) {
+    console.error("DEBUG: Cannot add invalid product to cart:", product);
+    return;
+  }
 
   const session = await getOrCreateSession(phone);
-  const currentCart = (session.cart as any[]) || [];
+
+  // Ensure we are working with an array
+  const currentCart = Array.isArray(session.cart)
+    ? (session.cart as any[])
+    : [];
+
+  // Check if item already exists to prevent duplicates
+  if (currentCart.find((i) => i.id === product.id)) {
+    console.log("DEBUG: Item already in cart, skipping.");
+    return;
+  }
 
   const normalizedItem = {
     id: product.id,
     name: product.name,
-    price: product.price,
-    image: product.images?.[0] || "https://placeholder-url.com/default.jpg",
+    price: Number(product.price) || 0, // Ensure price is a number
+    image:
+      product.images && product.images[0]
+        ? product.images[0]
+        : "https://placeholder-url.com/default.jpg",
     size: product.size || "Standard",
   };
 
-  if (currentCart.find((i) => i.id === normalizedItem.id)) return;
+  // Explicitly create a new array reference
+  const updatedCart = [...currentCart, normalizedItem];
+
+  console.log(
+    "DEBUG: Updating cart for",
+    phone,
+    "with",
+    updatedCart.length,
+    "items",
+  );
 
   return await prisma.chatSession.update({
     where: { phone },
-    data: { cart: [...currentCart, normalizedItem] },
+    data: {
+      cart: updatedCart,
+    },
   });
 }
 
