@@ -206,17 +206,36 @@ export async function POST(req: Request) {
   const adminPhones = process.env.ADMIN_PHONES?.split(",") || [];
   const isAdmin = adminPhones.includes(message.from);
 
-  // LOGGING: Add this to see what's happening in your Vercel logs
-  console.log(`Incoming message from ${message.from}. Admin: ${isAdmin}`);
-
-  // Admin Upload Logic
+  // 1. Admin Upload Logic
   if (isAdmin && message.image) {
-    await processAdminImage(message);
+    // CAPTURE the result
+    const product = await processAdminImage(message);
+
+    // BUILD and SEND the confirmation
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://lyvera.store";
+    const replyText = `✅ *Item Listed!*\n\n*Name:* ${product.name}\n*Price:* KES ${product.price}\n\n🔗 *View:* ${appUrl}/shop/${product.id}`;
+
+    await fetch(
+      `https://graph.facebook.com/v21.0/${process.env.WHATSAPP_PHONE_NUMBER_ID}/messages`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${process.env.WHATSAPP_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          messaging_product: "whatsapp",
+          to: message.from,
+          type: "text",
+          text: { body: replyText },
+        }),
+      },
+    );
+
     return new Response("OK", { status: 200 });
   }
 
-  // Customer Chat Logic (This is what you're not seeing)
-  // Ensure we are passing the message object here
+  // 2. Customer Chat Logic
   await handleCustomerChat(message);
   return new Response("OK", { status: 200 });
 }
