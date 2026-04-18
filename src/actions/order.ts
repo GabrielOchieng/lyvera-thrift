@@ -62,7 +62,7 @@ export async function createOrder(data: any) {
               productId: item.id,
               name: item.name,
               price: item.price,
-              size: item.size,
+              size: item.size || "Standard",
               image: item.image,
             })),
           },
@@ -94,16 +94,37 @@ export async function createOrder(data: any) {
 
     Check the admin dashboard to confirm.`;
 
-    for (const phone of adminPhones) {
-      try {
-        await sendWhatsApp(phone.trim(), {
-          image: previewImage,
-          caption: adminMessage,
-        });
-      } catch (error) {
-        console.error(`Failed to notify admin ${phone}:`, error);
-      }
-    }
+    console.log("Admin Phones Found:", adminPhones);
+
+    // for (const phone of adminPhones) {
+    //   try {
+    //     await sendWhatsApp(phone.trim(), {
+    //       image: previewImage,
+    //       caption: adminMessage,
+    //     });
+    //   } catch (error) {
+    //     console.error(`Failed to notify admin ${phone}:`, error);
+    //   }
+    // }
+
+    await Promise.allSettled(
+      adminPhones.map(async (rawPhone) => {
+        const cleanPhone = rawPhone.trim();
+        if (!cleanPhone) return;
+
+        try {
+          const response = await sendWhatsApp(cleanPhone, {
+            image: items[0]?.image || "https://placeholder-url.com/default.jpg",
+            caption: adminMessage,
+          });
+
+          console.log("res", response);
+          console.log(`✅ Admin notification sent to ${cleanPhone}`);
+        } catch (error) {
+          console.error(`❌ Meta API failure for admin ${cleanPhone}:`, error);
+        }
+      }),
+    );
 
     revalidatePath("/admin/orders");
     revalidatePath("/shop");
