@@ -155,7 +155,7 @@ export default function Navbar() {
 
             {/* RESULTS DROPDOWN */}
             {showDropdown && (results.length > 0 || isSearching) && (
-              <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-sm shadow-2xl border border-zinc-100 overflow-hidden z-[110]">
+              <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-sm shadow-2xl border border-zinc-100 overflow-hidden z-110">
                 {isSearching ? (
                   <div className="p-4 text-center text-zinc-500 text-sm">
                     Searching...
@@ -169,7 +169,7 @@ export default function Navbar() {
                         onClick={() => setShowDropdown(false)}
                         className="flex items-center gap-3 p-3 hover:bg-zinc-50 transition border-b border-zinc-50 last:border-0"
                       >
-                        <div className="h-12 w-12 bg-zinc-100 rounded-sm overflow-hidden flex-shrink-0">
+                        <div className="h-12 w-12 bg-zinc-100 rounded-sm overflow-hidden shrink-0">
                           {product.images?.[0] && (
                             <img
                               src={product.images[0]}
