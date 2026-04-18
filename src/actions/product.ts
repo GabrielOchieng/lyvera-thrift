@@ -133,3 +133,33 @@ export async function searchAdminItems(searchTerm: string) {
 
   return { products, orders };
 }
+
+export async function searchProducts(query: string) {
+  if (!query || query.length < 3) return { products: [] };
+
+  try {
+    const products = await prisma.product.findMany({
+      where: {
+        isSold: false, // Strict filter for the public navbar
+        OR: [
+          { name: { contains: query, mode: "insensitive" } },
+          { description: { contains: query, mode: "insensitive" } },
+          { category: { name: { contains: query, mode: "insensitive" } } },
+        ],
+      },
+      select: {
+        id: true,
+        name: true,
+        price: true,
+        images: true,
+        // Only select what the Navbar actually needs to keep it fast
+      },
+      take: 6, // Limit results for the dropdown
+    });
+
+    return { products };
+  } catch (error) {
+    console.error("Search Error:", error);
+    return { products: [] };
+  }
+}

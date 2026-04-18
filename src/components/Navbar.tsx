@@ -17,8 +17,8 @@ import {
 import { useEffect, useState, useRef } from "react";
 import { useCart } from "../../store/useCart";
 import { useDebounce } from "@/hooks/useDebounce";
-import { searchAdminItems } from "@/actions/product";
 import { useSession, signOut } from "@/lib/auth-client";
+import { searchProducts } from "@/actions/product";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -63,7 +63,8 @@ export default function Navbar() {
     const handleSearch = async () => {
       if (debouncedSearch.length > 2) {
         setIsSearching(true);
-        const data = await searchAdminItems(debouncedSearch);
+        // Use the new public-facing action
+        const data = await searchProducts(debouncedSearch);
         setResults(data.products || []);
         setIsSearching(false);
         setShowDropdown(true);
@@ -130,6 +131,7 @@ export default function Navbar() {
           </div>
 
           {/* Search Bar */}
+          {/* Search Bar */}
           <div
             className="flex-1 max-w-md relative hidden md:block"
             ref={searchRef}
@@ -150,7 +152,53 @@ export default function Navbar() {
                 )}
               </div>
             </div>
-            {/* Search Dropdown would go here */}
+
+            {/* RESULTS DROPDOWN */}
+            {showDropdown && (results.length > 0 || isSearching) && (
+              <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-sm shadow-2xl border border-zinc-100 overflow-hidden z-[110]">
+                {isSearching ? (
+                  <div className="p-4 text-center text-zinc-500 text-sm">
+                    Searching...
+                  </div>
+                ) : (
+                  <div className="max-h-80 overflow-y-auto">
+                    {results.map((product) => (
+                      <Link
+                        key={product.id}
+                        href={`/shop/${product.id}`}
+                        onClick={() => setShowDropdown(false)}
+                        className="flex items-center gap-3 p-3 hover:bg-zinc-50 transition border-b border-zinc-50 last:border-0"
+                      >
+                        <div className="h-12 w-12 bg-zinc-100 rounded-sm overflow-hidden flex-shrink-0">
+                          {product.images?.[0] && (
+                            <img
+                              src={product.images[0]}
+                              alt={product.name}
+                              className="h-full w-full object-cover"
+                            />
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-bold text-zinc-800 truncate">
+                            {product.name}
+                          </p>
+                          <p className="text-xs text-maroon-primary font-bold">
+                            KES {product.price}
+                          </p>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                )}
+                {!isSearching &&
+                  results.length === 0 &&
+                  searchTerm.length > 2 && (
+                    <div className="p-4 text-center text-zinc-500 text-sm">
+                      No items found.
+                    </div>
+                  )}
+              </div>
+            )}
           </div>
 
           {/* Icons Area */}

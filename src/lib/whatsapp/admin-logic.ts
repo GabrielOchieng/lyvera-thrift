@@ -147,9 +147,27 @@ export async function processAdminImage(message: any) {
       try {
         const model = genAI.getGenerativeModel({ model: modelName });
         const result = await model.generateContent([
-          `Extract product details from this image and caption: "${caption}". 
-           Respond ONLY with JSON: {"name": "...", "price": "...", "size": "...", "category": "...", "desc": "..."}`,
-          { inlineData: { data: base64Image, mimeType: "image/jpeg" } },
+          {
+            inlineData: { data: base64Image, mimeType: "image/jpeg" },
+          },
+          `TASK: Catalog this product.
+             
+             ADMIN INPUT: "${caption}"
+             (Note: The admin provides shorthand in the format "Size, Price". For example: "L, 2500" or "42, 3000")
+
+             EXTRACTION RULES:
+             1. Parse the "Size" from the first part of the Admin Input.
+             2. Parse the "Price" from the second part of the Admin Input.
+             3. Use the Image to generate a catchy "name", a relevant "category", and a brief 1-sentence "desc".
+
+             Respond ONLY with JSON: 
+             {
+               "name": "string", 
+               "price": "string", 
+               "size": "string", 
+               "category": "string", 
+               "desc": "string"
+             }`,
         ]);
 
         const text = result.response
