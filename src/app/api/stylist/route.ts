@@ -370,6 +370,87 @@ JSON STRUCTURE:
 }
 `;
 
+// export async function POST(req: Request) {
+//   try {
+//     const { message, history } = await req.json();
+//     const models = [
+//       "gemini-3.1-flash-lite-preview",
+//       "gemini-2.5-flash",
+//       "gemini-2.0-flash",
+//     ];
+//     let aiData: { reply: string; searchQuery: string } | null = null;
+
+//     const context = history
+//       ?.map((h: any) => `${h.role}: ${h.content}`)
+//       .join("\n");
+
+//     for (const modelName of models) {
+//       try {
+//         const model = genAI.getGenerativeModel({ model: modelName });
+//         const result = await model.generateContent([
+//           SYSTEM_PROMPT,
+//           `History:\n${context}\nUser: ${message}`,
+//         ]);
+//         const cleanJson = result.response
+//           .text()
+//           .replace(/```json|```/g, "")
+//           .trim();
+//         aiData = JSON.parse(cleanJson);
+//         if (aiData) break;
+//       } catch (err) {
+//         continue;
+//       }
+//     }
+
+//     if (!aiData) throw new Error("AI Failed");
+
+//     // --- SAFETY NET: MANUAL KEYWORD EXTRACTION ---
+//     let finalQuery = aiData.searchQuery?.toLowerCase() || "";
+//     const lowerMsg = message.toLowerCase();
+
+//     // If AI failed to provide a query but the user is clearly asking for something:
+//     if (!finalQuery) {
+//       if (lowerMsg.includes("accessories")) finalQuery = "accessories";
+//       else if (lowerMsg.includes("top")) finalQuery = "tops";
+//       else if (lowerMsg.includes("dress")) finalQuery = "dresses";
+//       else if (lowerMsg.includes("show") || lowerMsg.includes("see"))
+//         finalQuery = "all";
+//     }
+
+//     let products: any[] = [];
+
+//     if (finalQuery) {
+//       products = await prisma.product.findMany({
+//         where: {
+//           isSold: false,
+//           ...(finalQuery !== "all" && {
+//             OR: [
+//               { name: { contains: finalQuery, mode: "insensitive" } },
+//               {
+//                 category: {
+//                   name: { contains: finalQuery, mode: "insensitive" },
+//                 },
+//               },
+//               { description: { contains: finalQuery, mode: "insensitive" } },
+//             ],
+//           }),
+//         },
+//         take: 6,
+//         orderBy: { createdAt: "desc" },
+//       });
+//     }
+
+//     return NextResponse.json({ reply: aiData.reply, products });
+//   } catch (error) {
+//     return NextResponse.json({
+//       reply: "Snag in the racks! Try again?",
+//       products: [],
+//     });
+//   }
+// }
+
+// ... (imports and SYSTEM_PROMPT remain the same)
+
 export async function POST(req: Request) {
   try {
     const { message, history } = await req.json();
@@ -380,10 +461,10 @@ export async function POST(req: Request) {
     ];
     let aiData: { reply: string; searchQuery: string } | null = null;
 
+    // AI Generation Logic
     const context = history
       ?.map((h: any) => `${h.role}: ${h.content}`)
       .join("\n");
-
     for (const modelName of models) {
       try {
         const model = genAI.getGenerativeModel({ model: modelName });
@@ -404,11 +485,9 @@ export async function POST(req: Request) {
 
     if (!aiData) throw new Error("AI Failed");
 
-    // --- SAFETY NET: MANUAL KEYWORD EXTRACTION ---
+    // Safety Net Keyword Extraction
     let finalQuery = aiData.searchQuery?.toLowerCase() || "";
     const lowerMsg = message.toLowerCase();
-
-    // If AI failed to provide a query but the user is clearly asking for something:
     if (!finalQuery) {
       if (lowerMsg.includes("accessories")) finalQuery = "accessories";
       else if (lowerMsg.includes("top")) finalQuery = "tops";
@@ -418,6 +497,7 @@ export async function POST(req: Request) {
     }
 
     let products: any[] = [];
+    let finalReply = aiData.reply;
 
     if (finalQuery) {
       products = await prisma.product.findMany({
@@ -431,19 +511,22 @@ export async function POST(req: Request) {
                   name: { contains: finalQuery, mode: "insensitive" },
                 },
               },
-              { description: { contains: finalQuery, mode: "insensitive" } },
             ],
           }),
         },
         take: 6,
-        orderBy: { createdAt: "desc" },
       });
+
+      // --- NEW LOGIC: OVERRIDE IF EMPTY ---
+      if (products.length === 0 && finalQuery !== "") {
+        finalReply = `I looked through the racks for "${finalQuery}," but it looks like those pieces aren't available right now. Want to try a different category?`;
+      }
     }
 
-    return NextResponse.json({ reply: aiData.reply, products });
+    return NextResponse.json({ reply: finalReply, products });
   } catch (error) {
     return NextResponse.json({
-      reply: "Snag in the racks! Try again?",
+      reply: "I'm having trouble accessing the showroom.",
       products: [],
     });
   }
