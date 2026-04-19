@@ -76,7 +76,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_KE",
-    url: "https://lyvera-thrift.vercel.app", // Update with your actual domain later
+    url: "https://lyvera-thrift.vercel.app",
     siteName: "Lyvera Thrift",
     title: "Lyvera Thrift | Hand-Selected Vintage Curation",
     description:
