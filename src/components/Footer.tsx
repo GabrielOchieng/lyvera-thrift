@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { SiTiktok, SiInstagram, SiWhatsapp, SiFacebook } from "react-icons/si";
+import NewsletterForm from "./NewsLetterForm";
 
 export default function Footer() {
+  const currentYear = new Date().getFullYear();
   return (
     <footer className="bg-maroon-primary text-white pt-12 pb-6 px-4">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 border-b border-white/10 pb-10">
@@ -96,30 +98,22 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* Newsletter */}
+        {/* Newsletter Column */}
         <div>
           <h3 className="font-bold uppercase tracking-widest text-sm mb-4">
             Join the Club
           </h3>
-          <p className="text-xs text-zinc-300 mb-4">
+          <p className="text-xs text-zinc-300 mb-4 leading-relaxed">
             Be the first to know about our next weekly drop.
           </p>
-          <form className="flex gap-2">
-            <input
-              type="email"
-              placeholder="Email address"
-              className="bg-maroon-dark border border-white/20 px-3 py-2 rounded-sm text-sm flex-1 focus:outline-none focus:border-thrift-gold"
-            />
-            <button className="bg-thrift-gold text-maroon-primary font-bold px-4 py-2 rounded-sm text-xs uppercase hover:bg-white transition">
-              Join
-            </button>
-          </form>
+
+          <NewsletterForm />
         </div>
       </div>
 
       {/* Copyright */}
       <div className="max-w-7xl mx-auto mt-6 flex flex-col md:flex-row justify-between items-center text-[10px] text-zinc-400 uppercase tracking-widest">
-        <p>© 2026 Lyvera Thrifts. All Rights Reserved.</p>
+        <p>© {currentYear} Lyvera Thrifts. All Rights Reserved.</p>
         <div className="flex gap-4 mt-4 md:mt-0">
           <Link href="/privacy" className="hover:text-white">
             Privacy Policy
