@@ -32,13 +32,13 @@ export const auth = betterAuth({
             html: `
             <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff; border: 1px solid #f1f5f9; border-radius: 8px; overflow: hidden; color: #1e293b;">
         
-        <div style="background-color: #800000; padding: 30px 20px; text-align: center;">
+        <div style="background-color: #800000; padding: 20px 20px; text-align: center;">
           <img 
             src="${logoUrl}" 
             alt="Lyvera Thrifts Logo" 
             style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-bottom: 12px; border: 2px solid #EAB308; box-shadow: 0 4px 6px rgba(0,0,0,0.2);"
           />
-          <h1 style="color: #ffffff; font-size: 18px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; margin: 0;">Lyvera Thrifts</h1>
+          <h1 style="color: #f3c623; font-size: 18px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; margin: 0;">Lyvera Thrifts</h1>
   
         </div>
 
