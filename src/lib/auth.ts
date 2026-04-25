@@ -8,6 +8,7 @@ const resend = new Resend(process.env.RESEND_API_KEY?.trim());
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, { provider: "postgresql" }),
+  secret: process.env.BETTER_AUTH_SECRET,
   baseURL: process.env.NEXT_PUBLIC_APP_URL,
 
   emailAndPassword: {
