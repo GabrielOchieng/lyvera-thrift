@@ -19,6 +19,7 @@ import { useCart } from "../../store/useCart";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useSession, signOut } from "@/lib/auth-client";
 import { searchProducts } from "@/actions/product";
+import Image from "next/image";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -104,11 +105,16 @@ export default function Navbar() {
           </button>
 
           {/* Logo Section */}
-          <Link href="/" className="flex items-center gap-2 shrink-0">
-            <div className="w-10 h-10 bg-thrift-gold rounded-full flex items-center justify-center text-maroon-primary font-bold">
-              LT
+          <Link href="/" className="flex items-center gap-2 shrink-0 group">
+            <div className="w-10 h-10 relative bg-thrift-gold rounded-full flex items-center justify-center overflow-hidden border-2 border-thrift-gold group-hover:scale-105 transition-transform duration-300">
+              <Image
+                src="/logo.png"
+                alt="Lyvera Thrifts"
+                fill
+                className="object-cover"
+              />
             </div>
-            <span className="hidden sm:block text-xl font-serif font-bold tracking-tight">
+            <span className="hidden sm:block text-xl font-serif font-bold tracking-tight text-white group-hover:text-thrift-gold transition-colors">
               Lyvera Thrifts
             </span>
           </Link>

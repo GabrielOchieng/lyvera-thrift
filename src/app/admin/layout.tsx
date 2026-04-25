@@ -15,6 +15,7 @@ import {
   Bell,
   Loader2,
 } from "lucide-react";
+import Image from "next/image";
 
 export default function AdminLayout({
   children,
@@ -83,11 +84,31 @@ export default function AdminLayout({
     <div className="flex min-h-screen bg-[#fdfcfb]">
       {/* Sidebar */}
       <aside className="w-64 bg-maroon-primary text-white p-6 flex flex-col gap-8 shadow-xl sticky top-0 h-screen z-20">
-        <div className="flex flex-col gap-1">
+        {/* <div className="flex flex-col gap-1">
           <div className="text-xl font-serif font-bold tracking-tight text-thrift-gold italic">
             Lyvera Admin
           </div>
           <div className="h-1 w-12 bg-thrift-pink rounded-full"></div>
+        </div> */}
+
+        <div className="flex items-center gap-3">
+          {/* Logo Container */}
+          <div className="relative w-10 h-10 shrink-0 bg-thrift-gold rounded-full overflow-hidden border-2 border-thrift-gold shadow-md">
+            <Image
+              src="/logo.png"
+              alt="Lyvera Logo"
+              fill
+              className="object-cover"
+            />
+          </div>
+
+          {/* Text & Accent Section */}
+          <div className="flex flex-col gap-1">
+            <div className="text-xl font-serif font-bold tracking-tight text-thrift-gold italic leading-none">
+              Lyvera Admin
+            </div>
+            <div className="h-1 w-12 bg-thrift-pink rounded-full"></div>
+          </div>
         </div>
 
         <nav className="flex flex-col gap-3">

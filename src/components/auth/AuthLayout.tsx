@@ -1,5 +1,6 @@
 // components/auth/auth-layout.tsx
 import { CheckCircle2, Zap, ShieldCheck } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 export default function AuthLayout({
@@ -25,14 +26,16 @@ export default function AuthLayout({
 
         <div className="relative z-10">
           {/* Branded Logo Section */}
-          <Link
-            href="/"
-            className="flex items-center gap-3 shrink-0 group w-fit"
-          >
-            <div className="w-12 h-12 bg-thrift-gold rounded-full flex items-center justify-center text-maroon-primary font-bold shadow-lg group-hover:scale-105 transition-transform duration-300">
-              LT
+          <Link href="/" className="flex items-center gap-2 shrink-0 group">
+            <div className="w-10 h-10 relative bg-thrift-gold rounded-full flex items-center justify-center overflow-hidden border-2 border-thrift-gold group-hover:scale-105 transition-transform duration-300">
+              <Image
+                src="/logo.png" // Ensure your logo is in the /public folder
+                alt="Lyvera Thrifts"
+                fill
+                className="object-cover"
+              />
             </div>
-            <span className="text-2xl font-serif font-bold tracking-tight text-white">
+            <span className="hidden sm:block text-3xl font-serif font-bold tracking-tight text-white group-hover:text-thrift-gold transition-colors">
               Lyvera Thrifts
             </span>
           </Link>

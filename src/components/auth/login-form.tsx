@@ -135,7 +135,7 @@ export function LoginForm() {
   };
 
   return (
-    <div className="w-full max-w-[400px] mx-auto p-8 bg-white shadow-2xl rounded-sm">
+    <div className="w-full max-w-100 mx-auto p-8 bg-white shadow-2xl rounded-sm">
       <div className="text-center mb-8">
         <h2 className="text-3xl font-bold text-slate-900 tracking-tight">
           Welcome back
