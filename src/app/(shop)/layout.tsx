@@ -8,9 +8,9 @@ export default function ShopLayout({
 }) {
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
       {children}
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 }

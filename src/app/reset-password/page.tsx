@@ -1,13 +1,14 @@
 import { ResetPasswordForm } from "@/components/auth/ResetPasswordForm";
 import { Suspense } from "react";
+import AuthLayout from "@/components/auth/AuthLayout";
 
 export default function ResetPasswordPage() {
   return (
-    <div className="flex justify-center items-center min-h-screen">
+    <AuthLayout>
       {/* The Suspense boundary fixes the build error */}
       <Suspense fallback={<div>Loading...</div>}>
         <ResetPasswordForm />
       </Suspense>
-    </div>
+    </AuthLayout>
   );
 }
