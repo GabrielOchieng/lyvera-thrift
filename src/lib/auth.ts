@@ -32,7 +32,7 @@
 //             html: `
 //             <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff; border: 1px solid #f1f5f9; border-radius: 8px; overflow: hidden; color: #1e293b;">
 
-//         <div style="background-color: #800000; padding: 20px 20px; text-align: center;">
+//         <div style="background-color: #8B1A4F; padding: 20px 20px; text-align: center;">
 //           <img
 //             src="${logoUrl}"
 //             alt="Lyvera Thrifts Logo"
@@ -50,7 +50,7 @@
 //                 </p>
 
 //                 <div style="text-align: center; margin: 20px 0;">
-//                   <a href="${url}" style="display: inline-block; padding: 16px 40px; background-color: #800000; color: #ffffff; border: 2px solid #EAB308; border-radius: 4px; text-decoration: none; font-weight: 600; font-size: 14px; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 4px 15px rgba(128, 0, 0, 0.2);">
+//                   <a href="${url}" style="display: inline-block; padding: 16px 40px; background-color: #8B1A4F; color: #ffffff; border: 2px solid #EAB308; border-radius: 4px; text-decoration: none; font-weight: 600; font-size: 14px; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 4px 15px rgba(128, 0, 0, 0.2);">
 //                     Secure Your Account
 //                   </a>
 //                 </div>
@@ -146,7 +146,7 @@ export const auth = betterAuth({
           html: `
             <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff; border: 1px solid #f1f5f9; border-radius: 8px; overflow: hidden; color: #1e293b;">
               
-              <div style="background-color: #800000; padding: 20px 20px; text-align: center;">
+              <div style="background-color: #8B1A4F; padding: 20px 20px; text-align: center;">
                 <img 
                   src="${logoUrl}" 
                   alt="Lyvera Thrifts Logo" 
@@ -163,7 +163,7 @@ export const auth = betterAuth({
                 </p>
 
                 <div style="text-align: center; margin: 30px 0;">
-                  <a href="${url}" style="display: inline-block; padding: 16px 40px; background-color: #800000; color: #ffffff; border: 2px solid #EAB308; border-radius: 4px; text-decoration: none; font-weight: 600; font-size: 14px; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 4px 15px rgba(128, 0, 0, 0.2);">
+                  <a href="${url}" style="display: inline-block; padding: 16px 40px; background-color: #8B1A4F; color: #ffffff; border: 2px solid #EAB308; border-radius: 4px; text-decoration: none; font-weight: 600; font-size: 14px; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 4px 15px rgba(128, 0, 0, 0.2);">
                     Secure Your Account
                   </a>
                 </div>

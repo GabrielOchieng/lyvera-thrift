@@ -12,7 +12,7 @@ export default function InventoryPieChart({
     { name: "Available", value: active },
     { name: "Sold", value: sold },
   ];
-  const COLORS = ["#800000", "#e2e8f0"];
+  const COLORS = ["#8B1A4F", "#e2e8f0"];
 
   return (
     <div className="h-75 w-full flex items-center justify-center">

@@ -7,8 +7,8 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --color-maroon-primary: #80225d; /* That rich purple/maroon from your image */
-  --color-maroon-dark: #601a46;
+  --color-maroon-primary: #8b1a4f; /* That rich purple/maroon from your image */
+  --color-maroon-dark: #80183b;
   --color-thrift-gold: #f3c623;
 }
 

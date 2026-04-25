@@ -57,9 +57,9 @@ export default function RevenueChart({ data }: { data: any[] }) {
           <Line
             type="monotone"
             dataKey="amount"
-            stroke="#800000"
+            stroke="#8B1A4F"
             strokeWidth={3}
-            dot={{ r: 4, fill: "#800000" }}
+            dot={{ r: 4, fill: "#8B1A4F" }}
             activeDot={{ r: 6 }}
           />
         </LineChart>
