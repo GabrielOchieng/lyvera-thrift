@@ -25,7 +25,7 @@ export default function Footer() {
               <SiWhatsapp className="h-5 w-5" />
             </Link>
             <Link
-              href="https://tiktok.com/@lyvera_thrifts"
+              href="https://www.facebook.com/profile.php?id=61577474001804"
               className="hover:text-thrift-gold transition"
             >
               <SiFacebook className="h-5 w-5" />
@@ -36,7 +36,10 @@ export default function Footer() {
             >
               <SiTiktok className="h-5 w-5" />
             </Link>
-            <Link href="#" className="hover:text-thrift-gold transition">
+            <Link
+              href="https://www.instagram.com/lyvera_designs?igsh=a3Npbzd4NGZsMWZ3"
+              className="hover:text-thrift-gold transition"
+            >
               <SiInstagram className="h-5 w-5" />
             </Link>
           </div>
