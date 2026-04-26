@@ -29,7 +29,7 @@ export default async function Home() {
         <div className="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="max-w-xl">
             <div className="flex items-center gap-2 mb-2">
-              <h2 className="text-4xl font-black uppercase tracking-tighter text-zinc-900">
+              <h2 className="text-3xl font-black uppercase tracking-tighter text-zinc-900">
                 LYVERA PICKS
               </h2>
               {/* Active Pulse Icon */}
@@ -44,7 +44,7 @@ export default async function Home() {
             </p>
           </div>
 
-          <div className="h-px flex-1 bg-zinc-100 hidden md:block mb-4 mx-10" />
+          <div className="h-px flex-1 bg-zinc-100 hidden md:block mb-2 mx-10" />
 
           <span className="text-[10px] font-black uppercase tracking-[0.2em] text-maroon-primary bg-maroon-primary/10 px-4 py-2 rounded-full">
             {products.length} Items In Stock
@@ -69,7 +69,7 @@ export default async function Home() {
 
         {/* Empty State */}
         {products.length === 0 && (
-          <div className="text-center py-32 border-2 border-dashed border-zinc-200 rounded-[1rem]">
+          <div className="text-center py-16 md:py-32 border-2 border-dashed border-zinc-200 rounded-[1rem]">
             <p className="text-zinc-400 italic font-serif text-lg">
               Our racks are empty... for now.
             </p>
