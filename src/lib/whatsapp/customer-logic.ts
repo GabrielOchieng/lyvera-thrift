@@ -406,6 +406,7 @@ export async function handleCustomerChat(message: any) {
 
       [BRAND ASSETS]
       - Official Website: ${process.env.NEXT_PUBLIC_APP_URL || "https://lyverathrifts.com"}
+      - Phone/WhatsApp: +254 745 046 468
       - Support Email: hello@lyverathrifts.com
       - Location: Nairobi, Kenya
 
