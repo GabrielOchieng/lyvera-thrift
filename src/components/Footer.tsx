@@ -5,6 +5,10 @@ import NewsletterForm from "./NewsLetterForm";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const whatsappNumber = "254745046468";
+  const whatsappMsg = encodeURIComponent(
+    "Sasa Lyvera! I'm interested in your latest collection.",
+  );
   return (
     <footer className="bg-maroon-primary text-white pt-12 pb-6 px-4">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 border-b border-white/10 pb-10">
@@ -19,25 +23,33 @@ export default function Footer() {
           </p>
           <div className="flex gap-4 mt-2">
             <Link
-              href="https://tiktok.com/@lyvera_thrifts"
+              href={`https://wa.me/${whatsappNumber}?text=${whatsappMsg}`}
+              target="_blank"
+              rel="noopener noreferrer"
               className="hover:text-thrift-gold transition"
             >
               <SiWhatsapp className="h-5 w-5" />
             </Link>
             <Link
               href="https://www.facebook.com/profile.php?id=61577474001804"
+              target="_blank"
+              rel="noopener noreferrer"
               className="hover:text-thrift-gold transition"
             >
               <SiFacebook className="h-5 w-5" />
             </Link>
             <Link
               href="https://tiktok.com/@lyvera_thrifts"
+              target="_blank"
+              rel="noopener noreferrer"
               className="hover:text-thrift-gold transition"
             >
               <SiTiktok className="h-5 w-5" />
             </Link>
             <Link
               href="https://www.instagram.com/lyvera_designs?igsh=a3Npbzd4NGZsMWZ3"
+              target="_blank"
+              rel="noopener noreferrer"
               className="hover:text-thrift-gold transition"
             >
               <SiInstagram className="h-5 w-5" />
