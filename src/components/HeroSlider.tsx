@@ -76,7 +76,7 @@ export default function HeroSlider() {
               {slide.label}
             </span>
 
-            <h2 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter mb-6 max-w-5xl leading-[0.9] animate-in fade-in slide-in-from-bottom-6 duration-1000">
+            <h2 className="text-3xl md:text-6xl font-black italic uppercase tracking-tighter mb-6 max-w-5xl leading-[0.9] animate-in fade-in slide-in-from-bottom-6 duration-1000">
               {slide.title}
             </h2>
 
