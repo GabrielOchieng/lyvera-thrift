@@ -278,37 +278,6 @@ async function handleInitiateCheckout(from: string, session: any) {
   return await sendWhatsApp(from, checkStart);
 }
 
-// export async function sendWhatsApp(
-//   to: string,
-//   content: string | { image: string; caption: string },
-// ) {
-//   const payload: any = { messaging_product: "whatsapp", to };
-//   if (typeof content === "string") {
-//     payload.type = "text";
-//     payload.text = { body: content };
-//   } else {
-//     payload.type = "image";
-//     payload.image = { link: content.image, caption: content.caption };
-//   }
-
-//   const response = await fetch(
-//     `https://graph.facebook.com/v21.0/${process.env.WHATSAPP_PHONE_NUMBER_ID}/messages`,
-//     {
-//       method: "POST",
-//       headers: {
-//         Authorization: `Bearer ${process.env.WHATSAPP_TOKEN}`,
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify(payload),
-//     },
-//   );
-
-//   if (!response.ok) {
-//     const err = await response.json();
-//     console.error("🛑 Meta Error:", JSON.stringify(err, null, 2));
-//   }
-// }
-
 export async function sendWhatsApp(
   to: string,
   content: string | { image: string; caption: string },
@@ -334,12 +303,8 @@ export async function sendWhatsApp(
     },
   );
 
-  // CRITICAL: Await the JSON so the function doesn't resolve immediately
-  const data = await response.json();
-
   if (!response.ok) {
-    console.error("🛑 Meta Error:", JSON.stringify(data, null, 2));
+    const err = await response.json();
+    console.error("🛑 Meta Error:", JSON.stringify(err, null, 2));
   }
-
-  return data;
 }
