@@ -119,7 +119,7 @@ export default function AIStylist() {
       </button>
 
       {isOpen && (
-        <div className="fixed bottom-4 right-6 w-[90vw] md:w-100 h-137.5 bg-white shadow-2xl rounded-3xl overflow-hidden border border-zinc-200 flex flex-col z-50">
+        <div className="fixed bottom-1 right-6 w-[90vw] md:w-100 h-128 bg-white shadow-2xl rounded-3xl overflow-hidden border border-zinc-200 flex flex-col z-50">
           {/* <div className="bg-zinc-900 text-white p-4 flex justify-between items-center">
             <div className="flex items-center gap-2">
               <Sparkles size={16} className="text-thrift-gold" />
