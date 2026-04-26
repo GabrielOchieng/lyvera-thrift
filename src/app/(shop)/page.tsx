@@ -69,7 +69,7 @@ export default async function Home() {
 
         {/* Empty State */}
         {products.length === 0 && (
-          <div className="text-center py-32 border-2 border-dashed border-zinc-200 rounded-[3rem]">
+          <div className="text-center py-32 border-2 border-dashed border-zinc-200 rounded-[1rem]">
             <p className="text-zinc-400 italic font-serif text-lg">
               Our racks are empty... for now.
             </p>
