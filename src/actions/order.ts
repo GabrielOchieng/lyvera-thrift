@@ -72,59 +72,103 @@ export async function createOrder(data: any) {
       return newOrder;
     });
 
+    // const adminPhones = process.env.ADMIN_PHONES?.split(",") || [];
+    // const BASE_URL =
+    //   process.env.NEXT_PUBLIC_APP_URL ||
+    //   "https://lyvera-thrift-ihvf.vercel.app";
+
+    // const orderLink = `${BASE_URL}/admin/orders`;
+
+    // const previewImage =
+    //   items[0]?.image || "https://placeholder-url.com/default.jpg";
+    // const adminMessage = `🔔 *New Order Received!*
+
+    // *Order ID:* ${result.id}
+    // *Customer:* ${name}
+    // *Phone:* ${phone}
+    // *Location:* ${location}
+    // *Total:* KES ${total}
+    // *Items:* ${items.map((i: any) => i.name).join(", ")}
+
+    // *View in Dashboard:* ${orderLink}
+
+    // Check the admin dashboard to confirm.`;
+
+    // console.log("Admin Phones Found:", adminPhones);
+
+    // // for (const phone of adminPhones) {
+    // //   try {
+    // //     await sendWhatsApp(phone.trim(), {
+    // //       image: previewImage,
+    // //       caption: adminMessage,
+    // //     });
+    // //   } catch (error) {
+    // //     console.error(`Failed to notify admin ${phone}:`, error);
+    // //   }
+    // // }
+
+    // await Promise.allSettled(
+    //   adminPhones.map(async (rawPhone) => {
+    //     const cleanPhone = rawPhone.trim();
+    //     if (!cleanPhone) return;
+
+    //     try {
+    //       const response = await sendWhatsApp(cleanPhone, {
+    //         image: items[0]?.image || "https://placeholder-url.com/default.jpg",
+    //         caption: adminMessage,
+    //       });
+
+    //       console.log("res", response);
+    //       console.log(`✅ Admin notification sent to ${cleanPhone}`);
+    //     } catch (error) {
+    //       console.error(`❌ Meta API failure for admin ${cleanPhone}:`, error);
+    //     }
+    //   }),
+    // );
+
+    // revalidatePath("/admin/orders");
+    // revalidatePath("/shop");
+    // return { success: true, orderId: result.id };
+
     const adminPhones = process.env.ADMIN_PHONES?.split(",") || [];
     const BASE_URL =
       process.env.NEXT_PUBLIC_APP_URL ||
       "https://lyvera-thrift-ihvf.vercel.app";
-
     const orderLink = `${BASE_URL}/admin/orders`;
 
-    const previewImage =
-      items[0]?.image || "https://placeholder-url.com/default.jpg";
     const adminMessage = `🔔 *New Order Received!*
     
-    *Order ID:* ${result.id}
-    *Customer:* ${name}
-    *Phone:* ${phone}
-    *Location:* ${location}
-    *Total:* KES ${total}
-    *Items:* ${items.map((i: any) => i.name).join(", ")}
+*Order ID:* ${result.id}
+*Customer:* ${name}
+*Phone:* ${phone}
+*Location:* ${location}
+*Total:* KES ${total}
+*Items:* ${items.map((i: any) => i.name).join(", ")}
     
-    *View in Dashboard:* ${orderLink}
-
-    Check the admin dashboard to confirm.`;
+*View in Dashboard:* ${orderLink}`;
 
     console.log("Admin Phones Found:", adminPhones);
 
-    // for (const phone of adminPhones) {
-    //   try {
-    //     await sendWhatsApp(phone.trim(), {
-    //       image: previewImage,
-    //       caption: adminMessage,
-    //     });
-    //   } catch (error) {
-    //     console.error(`Failed to notify admin ${phone}:`, error);
-    //   }
-    // }
+    // 1. Process sequentially using for...of to avoid rate-limiting/drops
+    for (const rawPhone of adminPhones) {
+      const cleanPhone = rawPhone.trim();
+      if (!cleanPhone) continue;
 
-    await Promise.allSettled(
-      adminPhones.map(async (rawPhone) => {
-        const cleanPhone = rawPhone.trim();
-        if (!cleanPhone) return;
+      try {
+        const response = await sendWhatsApp(cleanPhone, {
+          image: items[0]?.image || "https://placeholder-url.com/default.jpg",
+          caption: adminMessage,
+        });
 
-        try {
-          const response = await sendWhatsApp(cleanPhone, {
-            image: items[0]?.image || "https://placeholder-url.com/default.jpg",
-            caption: adminMessage,
-          });
+        console.log(`✅ Admin notification sent to ${cleanPhone}`, response);
 
-          console.log("res", response);
-          console.log(`✅ Admin notification sent to ${cleanPhone}`);
-        } catch (error) {
-          console.error(`❌ Meta API failure for admin ${cleanPhone}:`, error);
-        }
-      }),
-    );
+        // 2. Add a tiny 300ms pause to ensure Meta processes the previous message
+        // before the next one hits their server.
+        await new Promise((resolve) => setTimeout(resolve, 300));
+      } catch (error) {
+        console.error(`❌ Meta API failure for admin ${cleanPhone}:`, error);
+      }
+    }
 
     revalidatePath("/admin/orders");
     revalidatePath("/shop");
