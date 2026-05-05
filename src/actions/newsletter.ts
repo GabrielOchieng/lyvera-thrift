@@ -68,6 +68,59 @@ export async function subscribeToNewsletter(formData: FormData) {
       `,
     });
 
+    // 2. Send the Admin Notification to YOU
+    await transporter.sendMail({
+      from: `"System | Lyvera Thrifts" <${process.env.SMTP_USER}>`,
+      to: "ogingagabriel@gmail.com",
+      subject: "✨ New Lead Captured | Lyvera Thrifts",
+      html: `
+        <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
+          
+          <!-- Header -->
+          <div style="background-color: #8B1A4F; padding: 20px; text-align: center; border-bottom: 4px solid #F3C623;">
+             <h1 style="color: #ffffff; font-size: 14px; font-weight: 800; letter-spacing: 4px; text-transform: uppercase; margin: 0;">New Subscriber Alert</h1>
+          </div>
+
+          <!-- Body -->
+          <div style="padding: 40px; background-color: #ffffff;">
+            <p style="font-size: 16px; color: #1e293b; margin-bottom: 25px;">
+              Great news, <strong>Gabriel</strong>! Your community just grew. A new lead has been captured from the website.
+            </p>
+
+            <!-- Lead Card -->
+            <div style="background-color: #f8fafc; border: 1px solid #f1f5f9; border-radius: 8px; padding: 25px; margin-bottom: 30px;">
+              <div style="margin-bottom: 15px;">
+                <p style="text-transform: uppercase; font-size: 10px; font-weight: 800; color: #94a3b8; letter-spacing: 1px; margin: 0 0 5px 0;">Customer Email</p>
+                <p style="font-size: 18px; font-weight: bold; color: #8B1A4F; margin: 0;">${email}</p>
+              </div>
+              
+              <div>
+                <p style="text-transform: uppercase; font-size: 10px; font-weight: 800; color: #94a3b8; letter-spacing: 1px; margin: 0 0 5px 0;">Signup Date & Time</p>
+                <p style="font-size: 14px; font-weight: 600; color: #475569; margin: 0;">${new Date().toLocaleString("en-KE", { timeZone: "Africa/Nairobi", dateStyle: "full", timeStyle: "short" })}</p>
+              </div>
+            </div>
+
+            <!-- Footer Action -->
+            <div style="text-align: center;">
+              <p style="font-size: 13px; color: #64748b; font-style: italic; margin-bottom: 20px;">
+                Keep building that financial freedom. 🚀
+              </p>
+              <a href="mailto:${email}" style="display: inline-block; padding: 12px 25px; background-color: #ffffff; color: #8B1A4F; border: 2px solid #8B1A4F; border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">
+                Contact Subscriber
+              </a>
+            </div>
+          </div>
+
+          <!-- Bottom Branding -->
+          <div style="padding: 20px; background-color: #f8fafc; text-align: center; border-top: 1px solid #f1f5f9;">
+            <p style="font-size: 10px; color: #cbd5e1; letter-spacing: 2px; text-transform: uppercase; margin: 0;">
+              Internal Notification System &bull; Lyvera Thrifts
+            </p>
+          </div>
+        </div>
+      `,
+    });
+
     return { success: true };
   } catch (error: any) {
     console.error("[Newsletter SMTP Error]:", error.message);
