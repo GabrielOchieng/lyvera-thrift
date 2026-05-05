@@ -27,7 +27,7 @@ export async function handleCheckoutFlow(
       await clearCart(from);
       return await sendWhatsApp(
         from,
-        "✅ Order received! Pay to Till 5293638. Reply PAID when done.",
+        "✅ Order received! Pay to Pochi la Biashara: 0745046648. Reply PAID when done.",
       );
   }
 }
