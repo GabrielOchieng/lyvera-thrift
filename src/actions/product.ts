@@ -53,12 +53,45 @@ export async function createProduct(formData: FormData) {
 /**
  * UPDATE PRODUCT (For the Modal)
  */
+// export async function updateProduct(id: string, formData: FormData) {
+//   // Use "as string" or a fallback to ensure it's never null
+//   const name = (formData.get("name") as string) || "";
+//   const description = formData.get("description") as string; // description is likely optional in schema
+//   const size = formData.get("size") as string;
+//   const categoryId = formData.get("categoryId") as string;
+//   const rawPrice = formData.get("price");
+
+//   const price = parseInt(rawPrice as string, 10);
+
+//   try {
+//     await prisma.product.update({
+//       where: { id },
+//       data: {
+//         name: name, // Guaranteed string now
+//         // For optional fields in Prisma, use 'undefined' instead of 'null'
+//         // if you don't want to overwrite them with nothing.
+//         description: description || undefined,
+//         price: isNaN(price) ? undefined : price,
+//         size: size || undefined,
+//         category: {
+//           connect: { id: categoryId.toLowerCase() },
+//         },
+//       },
+//     });
+
+//     revalidatePath("/admin/inventory");
+//   } catch (error) {
+//     console.error("Update Error:", error);
+//     throw new Error("Failed to update product.");
+//   }
+// }
+
 export async function updateProduct(id: string, formData: FormData) {
   // Use "as string" or a fallback to ensure it's never null
   const name = (formData.get("name") as string) || "";
-  const description = formData.get("description") as string; // description is likely optional in schema
+  const description = formData.get("description") as string;
   const size = formData.get("size") as string;
-  const categoryId = formData.get("categoryId") as string;
+  const categoryId = formData.get("categoryId") as string; // This is now a CUID from your DB
   const rawPrice = formData.get("price");
 
   const price = parseInt(rawPrice as string, 10);
@@ -67,21 +100,26 @@ export async function updateProduct(id: string, formData: FormData) {
     await prisma.product.update({
       where: { id },
       data: {
-        name: name, // Guaranteed string now
-        // For optional fields in Prisma, use 'undefined' instead of 'null'
-        // if you don't want to overwrite them with nothing.
+        name: name,
         description: description || undefined,
         price: isNaN(price) ? undefined : price,
         size: size || undefined,
         category: {
-          connect: { id: categoryId.toLowerCase() },
+          // REMOVED .toLowerCase() - CUIDs must remain exactly as they are in the DB
+          connect: { id: categoryId.trim() },
         },
       },
     });
 
     revalidatePath("/admin/inventory");
   } catch (error) {
-    console.error("Update Error:", error);
+    // Logging the error helps you see exactly which ID failed in your terminal
+    console.error(
+      "Update Error for Product ID:",
+      id,
+      "with Category ID:",
+      categoryId,
+    );
     throw new Error("Failed to update product.");
   }
 }
