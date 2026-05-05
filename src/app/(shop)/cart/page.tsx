@@ -599,13 +599,13 @@ export default function CartPage() {
                 <div className="space-y-4 text-center animate-in fade-in slide-in-from-bottom-4">
                   <div className="bg-zinc-900 p-8 rounded-[2.5rem] text-white">
                     <p className="text-[10px] text-zinc-400 uppercase font-bold tracking-[0.2em] mb-4">
-                      M-PESA BUY GOODS TILL
+                      M-PESA POCHI LA BIASHARA
                     </p>
                     <p className="text-5xl font-black tracking-tighter text-thrift-gold mb-2">
-                      5293638
+                      0745046468
                     </p>
-                    <p className="text-xs text-zinc-500 font-mono">
-                      LYVERA PIECE
+                    <p className="text-xs text-zinc-500 font-mono italic">
+                      Veronica Oyungwa
                     </p>
                     <div className="h-px bg-white/10 w-full my-6" />
                     <div className="flex justify-between items-center px-2">
@@ -621,8 +621,9 @@ export default function CartPage() {
                   <div className="bg-blue-50 p-4 rounded-2xl flex items-start gap-3 text-left">
                     <AlertTriangle className="h-5 w-5 text-blue-600 shrink-0" />
                     <p className="text-[11px] text-blue-800 font-medium">
-                      After paying, please keep your M-Pesa confirmation
-                      message. Click below to notify our team.
+                      Ensure you select <b>Pochi la Biashara</b> in the Lipa na
+                      M-PESA menu. After paying, please keep your M-Pesa
+                      confirmation message.
                     </p>
                   </div>
 

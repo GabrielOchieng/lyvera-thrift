@@ -89,7 +89,7 @@ export async function handleCustomerChat(message: any) {
       [BRAND ASSETS]
       - Official Website: ${process.env.NEXT_PUBLIC_APP_URL || "https://lyverathrifts.com"}
       - Phone/WhatsApp: +254 745 046 468
-      - Support Email: hello@lyverathrifts.com
+      - Support Email: lyverathrifts@gmail.com
       - Location: Nairobi, Kenya
 
       [IMPORTANT IDENTITY RULE]
@@ -237,7 +237,7 @@ async function handleCheckoutFlow(from: string, session: any, text: string) {
         data: { state: "awaiting_payment", location: text },
       });
 
-      const orderSummary = `✅ *Order Received!*\n\nTotal: KES ${total}\n\nPay Till: *5293638*\n\nReply *PAID* when done.`;
+      const orderSummary = `✅ *Order Received!*\n\nTotal: KES ${total}\n\nPay to Pochi la Biashara: *0745046468*\n\nReply *PAID* when done.`;
       await logMessage(from, "bot", orderSummary);
       return await sendWhatsApp(from, orderSummary);
 
