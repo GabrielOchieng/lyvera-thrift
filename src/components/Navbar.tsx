@@ -329,7 +329,7 @@ export default function Navbar() {
                 </div>
                 <button
                   onClick={handleSignOut}
-                  className="text-red-400 text-3xl font-black italic uppercase"
+                  className="text-red-400 text-xl font-black "
                 >
                   Logout
                 </button>
@@ -337,7 +337,7 @@ export default function Navbar() {
             ) : (
               <Link
                 href="/login"
-                className="text-thrift-gold text-3xl font-black italic uppercase"
+                className="text-thrift-gold text-xl font-black "
               >
                 Login
               </Link>
