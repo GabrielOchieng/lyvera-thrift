@@ -262,24 +262,34 @@ export default function AIStylist() {
   // VIBE SUGGESTIONS (Quick Actions)
   const quickActions = [
     {
-      label: "Naivasha Trip",
+      label: "Vasha Weekend",
       icon: <MapPin size={12} />,
-      prompt: "I need something breezy for a weekend trip to Naivasha",
+      prompt:
+        "I need something breezy and 'rich kid' for a weekend trip to Naivasha.",
     },
     {
-      label: "Sunday Brunch",
+      label: "Kula Lunch",
       icon: <Coffee size={12} />,
-      prompt: "Style me for a classy Sunday brunch in Nairobi",
+      prompt:
+        "Style me for a classy Sunday brunch or 'Kula Lunch' with the girls in Nairobi.",
     },
     {
-      label: "Night Out",
+      label: "Nairobi Nightlife",
       icon: <PartyPopper size={12} />,
-      prompt: "I want a bold look for a night out with the girls",
+      prompt:
+        "I want a baddie look for a night out—something bold and stylish.",
     },
     {
-      label: "Office Chic",
+      label: "Corporate Baddie",
       icon: <ShoppingBag size={12} />,
-      prompt: "Show me some professional but stylish office wear",
+      prompt:
+        "Show me some 'Corporate Baddie' fits—professional but still very stylish for the office.",
+    },
+    {
+      label: "Dunda/Gig Look",
+      icon: <Sparkles size={12} />,
+      prompt:
+        "Style me for a gig or an outdoor event—something trendy and comfortable.",
     },
   ];
 
