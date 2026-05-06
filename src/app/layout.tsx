@@ -38,6 +38,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/next";
 import { Toaster } from "sonner";
 import RecentSoldToast from "@/components/cart/RecentSoldToast";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
@@ -117,6 +118,7 @@ export default function RootLayout({
         <WhatsAppFloat />
         <AIStylist />
         <Toaster position="top-center" richColors />
+        <Analytics />
       </body>
     </html>
   );
