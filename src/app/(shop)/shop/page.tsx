@@ -291,7 +291,7 @@ export default async function ShopPage({
   return (
     <div className="max-w-7xl mx-auto px-4 py-20 md:py-24 min-h-screen">
       {/* MOBILE CATEGORY SCROLL (Hidden on Desktop) */}
-      <div className="md:hidden overflow-x-auto pb-6 -mx-4 px-4 no-scrollbar flex gap-2 sticky top-16 bg-white/80 backdrop-blur-md z-30 border-b border-zinc-100">
+      <div className="md:hidden overflow-x-auto py-3 -mx-4 px-4 no-scrollbar flex gap-2 sticky top-16 bg-white/80 backdrop-blur-md z-30 border-b border-zinc-100">
         <Link
           href="/shop"
           className={`whitespace-nowrap px-5 py-2 rounded-full text-[10px] font-black tracking-widest border transition-all ${
