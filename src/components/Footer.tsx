@@ -26,7 +26,7 @@ export default function Footer() {
               href={`https://wa.me/${whatsappNumber}?text=${whatsappMsg}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-thrift-gold transition"
+              className=" text-thrift-gold hover:text-white transition"
             >
               <SiWhatsapp className="h-5 w-5" />
             </Link>
@@ -34,7 +34,7 @@ export default function Footer() {
               href="https://www.facebook.com/profile.php?id=61577474001804"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-thrift-gold transition"
+              className="text-thrift-gold hover:text-white transition"
             >
               <SiFacebook className="h-5 w-5" />
             </Link>
@@ -42,7 +42,7 @@ export default function Footer() {
               href="https://tiktok.com/@lyvera_thrifts"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-thrift-gold transition"
+              className="text-thrift-gold hover:text-white transition"
             >
               <SiTiktok className="h-5 w-5" />
             </Link>
@@ -50,7 +50,7 @@ export default function Footer() {
               href="https://www.instagram.com/lyvera_designs?igsh=a3Npbzd4NGZsMWZ3"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-thrift-gold transition"
+              className="text-thrift-gold hover:text-white transition"
             >
               <SiInstagram className="h-5 w-5" />
             </Link>
