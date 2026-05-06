@@ -47,11 +47,11 @@ export default async function ProductDetailPage({
     )) || [];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-24 min-h-screen">
+    <div className="max-w-7xl mx-auto px-4 py-20 min-h-screen">
       {/* Navigation Back */}
       <Link
         href={`/shop?category=${encodeURIComponent(product.category.name)}`}
-        className="flex items-center gap-2 text-zinc-500 hover:text-maroon-primary transition mb-8 group w-fit"
+        className="flex items-center gap-2 text-zinc-500 hover:text-maroon-primary transition mb-4 group w-fit"
       >
         <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
         <span className="font-medium">
@@ -59,7 +59,7 @@ export default async function ProductDetailPage({
         </span>
       </Link>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12 items-start">
         {/* --- LEFT: DYNAMIC MEDIA SECTION --- */}
         {/* This handles the static image + AI Video Generation logic */}
         <DynamicMedia product={JSON.parse(JSON.stringify(product))} />
@@ -67,7 +67,7 @@ export default async function ProductDetailPage({
         {/* Right: Product Details */}
         <div className="flex flex-col gap-8">
           <div className="space-y-4">
-            <div className="flex justify-between items-start">
+            <div className="flex flex-col md:flex-row gap-2 justify-between items-start">
               <span className="bg-thrift-gold/20 text-maroon-primary px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">
                 {product.category.name}
               </span>
@@ -80,7 +80,7 @@ export default async function ProductDetailPage({
               </div>
             </div>
 
-            <h1 className="text-2xl font-serif font-bold text-zinc-900 leading-tight uppercase tracking-tighter">
+            <h1 className="text-xl md:text-2xl font-serif font-bold text-zinc-900 leading-tight uppercase tracking-tighter">
               {product.name}
             </h1>
             <p className="text-xl font-black text-maroon-primary italic tracking-tighter">
