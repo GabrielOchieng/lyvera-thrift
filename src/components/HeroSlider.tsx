@@ -8,32 +8,32 @@ const SLIDES = [
   {
     image:
       "https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=2070",
-    title: "THE SUSTAINABLE ARCHIVE",
+    title: "FRESH CAMERA DROPS",
     subtitle:
-      "Consciously sourced. Timelessly styled. Discover one-of-one pieces salvaged for the modern wardrobe.",
-    cta: "VIEW NEW ARRIVALS",
+      "Strictly Grade 1. We’ve done the dirty work in Giks so you can just look fly. No fades, no flaws.",
+    cta: "CLAIM YOUR PIECE",
     link: "/shop",
-    label: "NEW CURATION",
+    label: "NEW ARRIVALS",
   },
   {
     image:
       "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?q=80&w=1974",
-    title: "CURATED SILHOUETTES",
+    title: "1-OF-1 SAVAGE FINDS",
     subtitle:
-      "Defining your individual style through rare vintage finds and premium pre-loved essentials.",
-    cta: "VIEW NEW ARRIVALS",
+      "Unmatched vibes only. Why wear what everyone else has? Secure the piece before it’s 'Sold Out'.",
+    cta: "BOOK YOUR LOOK",
     link: "/shop",
-    label: "EST. 2024",
+    label: "EXCLUSIVE",
   },
   {
     image:
       "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070",
-    title: "BEYOND THE TRENDS",
+    title: "CLEAN VINTAGE STEALS",
     subtitle:
-      "Because style shouldn't cost the Earth. Hand-picked treasures waiting for their second life.",
-    cta: "VIEW NEW ARRIVALS",
+      "Premium thrift at prices that make sense. Upgrade your wardrobe without breaking the bank.",
+    cta: "VIEW CAMERA SELECTIONS",
     link: "/shop",
-    label: "LYVERA EDIT",
+    label: "LYVERA'S BEST",
   },
 ];
 
@@ -65,7 +65,9 @@ export default function HeroSlider() {
           <div
             className="absolute inset-0 bg-cover bg-center transition-transform duration-[10s]"
             style={{
-              backgroundImage: `linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.4) 100%), url(${slide.image})`,
+              // backgroundImage: `linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.4) 100%), url(${slide.image})`,
+              // Change your gradient from 0.8/0.3/0.4 to a deeper 0.9/0.6/0.5
+              backgroundImage: `linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 40%, rgba(0,0,0,0.5) 100%), url(${slide.image})`,
               transform: index === current ? "scale(1)" : "scale(1.1)",
             }}
           />
@@ -76,7 +78,7 @@ export default function HeroSlider() {
               {slide.label}
             </span>
 
-            <h2 className="text-3xl md:text-6xl font-black italic uppercase tracking-tighter mb-6 max-w-5xl leading-[0.9] animate-in fade-in slide-in-from-bottom-6 duration-1000">
+            <h2 className="text-3xl md:text-5xl font-black italic uppercase tracking-tighter mb-6 max-w-5xl leading-[0.9] animate-in fade-in slide-in-from-bottom-6 duration-1000">
               {slide.title}
             </h2>
 
