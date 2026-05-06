@@ -535,10 +535,10 @@ export default function CartPage() {
                     alt={item.name}
                   />
                   <div className="flex-1">
-                    <h3 className="font-bold uppercase text-lg leading-tight">
+                    <h3 className="font-bold uppercase text-sm md:text-lg leading-tight">
                       {item.name}
                     </h3>
-                    <p className="text-maroon-primary font-black mt-2 italic">
+                    <p className="text-maroon-primary text-sm md:text-md font-black mt-2 italic">
                       KES {item.price.toLocaleString()}
                     </p>
                   </div>
@@ -555,12 +555,12 @@ export default function CartPage() {
             {/* Receipt Summary Side (The zigzag design we discussed) */}
             <div className="lg:col-span-1">
               <div className="bg-white p-8 rounded-[1rem] border border-zinc-200 shadow-xl sticky top-24">
-                <h2 className="text-xl font-black uppercase tracking-tighter mb-6 text-zinc-400">
+                <h2 className="text-lg font-black uppercase tracking-tighter mb-6 text-zinc-400">
                   Summary
                 </h2>
-                <div className="flex justify-between text-xl font-black uppercase mb-8">
+                <div className="flex justify-between text-sm md:text-lg font-black uppercase mb-8">
                   <span>Total</span>
-                  <span className="text-maroon-primary italic">
+                  <span className="text-maroon-primary text-sm md:text-md italic">
                     KES {total.toLocaleString()}
                   </span>
                 </div>

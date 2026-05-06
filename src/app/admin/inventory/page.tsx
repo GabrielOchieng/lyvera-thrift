@@ -256,7 +256,7 @@ export default async function InventoryPage({
           </span>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           <Link
             href="/admin/inventory"
             className={`px-4 py-2 rounded-full text-xs font-bold transition-all ${
