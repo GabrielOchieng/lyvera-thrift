@@ -115,7 +115,7 @@ export default function RootLayout({
       >
         {children}
         <RecentSoldToast />
-        <WhatsAppFloat />
+        {/* <WhatsAppFloat /> */}
         <AIStylist />
         <Toaster position="top-center" richColors />
         <Analytics />

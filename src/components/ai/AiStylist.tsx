@@ -256,7 +256,7 @@ export default function AIStylist() {
   const welcomeMessage: ChatMessage = {
     role: "assistant",
     content:
-      "Hey love! ✨ I'm your Lyvera Stylist. Not sure what to wear? Tell me your vibe or where you're headed (e.g., 'A trip to Naivasha' or 'Sunday Brunch').",
+      " ✨ I'm your Lyvera Stylist. Not sure what to wear? Tell me your vibe or where you're headed (e.g., 'A trip to Naivasha' or 'Sunday Brunch').",
   };
 
   // VIBE SUGGESTIONS (Quick Actions)
@@ -372,7 +372,7 @@ export default function AIStylist() {
       </button>
 
       {isOpen && (
-        <div className="fixed bottom-24 right-6 w-[90vw] md:w-96 h-100 bg-white shadow-2xl rounded-[32px] overflow-hidden border border-zinc-200 flex flex-col z-50 animate-in fade-in slide-in-from-bottom-4">
+        <div className="fixed bottom-1 right-6 w-[90vw] md:w-100 h-128 bg-white shadow-2xl rounded-3xl overflow-hidden border border-zinc-200 flex flex-col z-50">
           {/* HEADER */}
           <div className="bg-zinc-900 text-white p-5 flex justify-between items-center">
             <div className="flex items-center gap-2">
@@ -383,7 +383,7 @@ export default function AIStylist() {
                 <span className="text-[10px] font-black tracking-[0.2em] uppercase text-zinc-400 leading-none">
                   AI Assistant
                 </span>
-                <span className="text-sm font-bold font-serif italic">
+                <span className="text-sm text-thrift-gold font-bold font-serif italic">
                   Lyvera Stylist
                 </span>
               </div>
