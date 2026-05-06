@@ -299,7 +299,7 @@ export default function Navbar() {
         }`}
         style={{ paddingTop: "64px" }}
       >
-        <div className="flex flex-col p-8 gap-6 text-2xl font-black italic uppercase tracking-tighter h-full">
+        <div className="flex flex-col p-8 gap-4 text-xl font-black  tracking-tighter h-full">
           {navLinks.map((link) => (
             <Link
               key={link.href}
