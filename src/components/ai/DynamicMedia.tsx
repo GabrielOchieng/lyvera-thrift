@@ -108,7 +108,7 @@ export default function DynamicMedia({ product }: DynamicMediaProps) {
             <button
               key={idx}
               onClick={() => setActiveIndex(idx)}
-              className={`relative flex-shrink-0 w-20 aspect-square rounded-xl overflow-hidden border-2 transition-all ${
+              className={`relative shrink-0 w-20 aspect-square rounded-xl overflow-hidden border-2 transition-all ${
                 activeIndex === idx
                   ? "border-maroon-primary scale-95"
                   : "border-transparent opacity-60"
