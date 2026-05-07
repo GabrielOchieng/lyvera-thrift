@@ -4,6 +4,7 @@ import ProductCard from "@/components/ProductCard";
 import HeroSlider from "@/components/HeroSlider";
 import prisma from "../../../lib/prisma";
 import { safeDbQuery } from "@/lib/db-utils"; // Import your helper
+import TrustSignals from "@/components/TrustSignals";
 
 export default async function Home() {
   // Wrap the fetch in safeDbQuery to handle Neon's cold starts
@@ -25,8 +26,10 @@ export default async function Home() {
     <main>
       <HeroSlider />
 
-      <section className="px-6 py-20 max-w-7xl mx-auto">
-        <div className="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-6">
+      {/* <TrustSignals /> */}
+
+      <section className="px-6 py-8 max-w-7xl mx-auto">
+        <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="max-w-xl">
             <div className="flex items-center gap-2 mb-2">
               <h2 className="text-3xl font-black uppercase tracking-tighter text-zinc-900">
