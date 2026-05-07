@@ -6,6 +6,17 @@ import prisma from "../../../lib/prisma";
 import { safeDbQuery } from "@/lib/db-utils"; // Import your helper
 import TrustSignals from "@/components/TrustSignals";
 
+async function getTrendingData() {
+  // Pulls 4 categories with the most items
+  const categories = await prisma.category.findMany({
+    take: 4,
+    orderBy: {
+      products: { _count: "desc" },
+    },
+  });
+  return categories.map((c) => c.name);
+}
+
 export default async function Home() {
   // Wrap the fetch in safeDbQuery to handle Neon's cold starts
   const products = await safeDbQuery(() =>
@@ -22,11 +33,13 @@ export default async function Home() {
     }),
   );
 
+  const trending = await getTrendingData();
+
   return (
     <main>
       <HeroSlider />
 
-      <TrustSignals />
+      <TrustSignals trendingTags={trending} />
 
       <section className="px-6 py-8 max-w-7xl mx-auto">
         <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
