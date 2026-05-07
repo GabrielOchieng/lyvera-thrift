@@ -259,9 +259,11 @@ export default function AdminPanelClient({
                 <span className="absolute top-1 right-1 h-2 w-2 bg-thrift-pink rounded-full border-2 border-white" />
               )}
             </Link>
-            <div className="h-8 w-8 lg:h-9 lg:w-9 bg-maroon-primary rounded-full flex items-center justify-center text-[10px] lg:text-xs font-bold text-thrift-gold border border-thrift-gold/30">
-              LT
-            </div>
+            <Link href="/" className="transition-opacity hover:opacity-80">
+              <div className="h-8 w-8 lg:h-9 lg:w-9 bg-maroon-primary rounded-full flex items-center justify-center text-[10px] lg:text-xs font-bold text-thrift-gold border border-thrift-gold/30">
+                LT
+              </div>
+            </Link>
           </div>
         </header>
 
