@@ -62,7 +62,14 @@ export default async function ProductDetailPage({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12 items-start">
         {/* --- LEFT: DYNAMIC MEDIA SECTION --- */}
         {/* This handles the static image + AI Video Generation logic */}
-        <DynamicMedia product={JSON.parse(JSON.stringify(product))} />
+        {/* <DynamicMedia product={JSON.parse(JSON.stringify(product))} /> */}
+        <DynamicMedia
+          product={{
+            images: product.images,
+            name: product.name,
+            videoUrl: product.videoUrl,
+          }}
+        />
 
         {/* Right: Product Details */}
         <div className="flex flex-col gap-8">
