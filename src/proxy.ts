@@ -1,22 +1,40 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { getSessionCookie } from "better-auth/cookies";
+import { betterFetch } from "@better-fetch/fetch";
+// Change the type import to get the full session shape
+import type { auth } from "@/lib/auth";
 
-// Change the name from 'middleware' to 'proxy'
+type SessionData = typeof auth.$Infer.Session;
+
 export async function proxy(request: NextRequest) {
-  const sessionCookie = getSessionCookie(request);
+  const { pathname } = request.nextUrl;
 
-  // 1. If trying to reach checkout without a session, redirect to login
-  // if (!sessionCookie && request.nextUrl.pathname.startsWith("/checkout")) {
-  //   return NextResponse.redirect(new URL("/login", request.url));
-  // }
+  const { data: session } = await betterFetch<SessionData>(
+    "/api/auth/get-session",
+    {
+      baseURL: request.nextUrl.origin,
+      headers: {
+        cookie: request.headers.get("cookie") || "",
+      },
+    },
+  );
 
-  // 2. Admin Protection
-  // Note: For deep role validation (is user actually an 'admin'?),
-  // we do that inside the /admin page's Server Component using getSession()
+  if (pathname.startsWith("/dashboard") || pathname.startsWith("/admin")) {
+    if (!session) {
+      return NextResponse.redirect(new URL("/", request.url));
+    }
+
+    // FIX: Better-Auth returns { session: {...}, user: {...} }
+    // Access 'user' directly from the session object returned by betterFetch
+    if (pathname.startsWith("/admin")) {
+      if (session.user.role !== "admin") {
+        return NextResponse.redirect(new URL("/", request.url));
+      }
+    }
+  }
+
   return NextResponse.next();
 }
 
 export const config = {
-  // These are the routes that will trigger this function
   matcher: ["/checkout/:path*", "/dashboard/:path*", "/admin/:path*"],
 };
