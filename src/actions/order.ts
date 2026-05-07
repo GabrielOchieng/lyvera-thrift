@@ -74,8 +74,7 @@ export async function createOrder(data: any) {
 
     const adminPhones = process.env.ADMIN_PHONES?.split(",") || [];
     const BASE_URL =
-      process.env.NEXT_PUBLIC_APP_URL ||
-      "https://lyvera-thrift-ihvf.vercel.app";
+      process.env.NEXT_PUBLIC_APP_URL || "https://www.lyverathrift.boutique";
 
     const orderLink = `${BASE_URL}/admin/orders`;
 
