@@ -143,150 +143,6 @@
 // // //   });
 // // // }
 
-// import { v2 as cloudinary } from "cloudinary";
-// import { GoogleGenerativeAI } from "@google/generative-ai";
-// import prisma from "../../../lib/prisma";
-
-// cloudinary.config({
-//   cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
-//   api_key: process.env.CLOUDINARY_API_KEY,
-//   api_secret: process.env.CLOUDINARY_API_SECRET,
-// });
-
-// const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-
-// export async function processAdminImage(message: any) {
-//   const imageId = message.image.id;
-//   const messageId = message.id;
-//   const caption = message.image.caption?.trim() || "";
-//   const senderPhone = message.from;
-
-//   // 1. DEDUPLICATION
-//   try {
-//     await prisma.processedMessage.create({ data: { id: messageId } });
-//   } catch (e) {
-//     return null;
-//   }
-
-//   // 2. SESSION KEY (Groups images sent within the same 30s window)
-//   const timeBlock = Math.floor(Date.now() / 30000);
-//   const sessionKey = `lyvera_${senderPhone}_${timeBlock}`;
-
-//   // 3. MEDIA PROCESSING
-//   const mediaResponse = await fetch(
-//     `https://graph.facebook.com/v21.0/${imageId}`,
-//     {
-//       headers: { Authorization: `Bearer ${process.env.WHATSAPP_TOKEN}` },
-//     },
-//   );
-//   const mediaData = await mediaResponse.json();
-//   const download = await fetch(mediaData.url, {
-//     headers: { Authorization: `Bearer ${process.env.WHATSAPP_TOKEN}` },
-//   });
-//   const imageBuffer = Buffer.from(await download.arrayBuffer());
-
-//   const uploadToCloudinary = () =>
-//     new Promise((res, rej) => {
-//       cloudinary.uploader
-//         .upload_stream({ folder: "lyvera_bot" }, (err, result) =>
-//           err ? rej(err) : res(result),
-//         )
-//         .end(imageBuffer);
-//     });
-
-//   const uploadRes: any = await uploadToCloudinary();
-//   const imageUrl = uploadRes.secure_url;
-
-//   // 4. ATOMIC POLLING (Wait for the 'Creator' to finish)
-//   let retries = 0;
-//   let masterProduct = null;
-
-//   while (retries < 6) {
-//     masterProduct = await prisma.product.findFirst({
-//       where: {
-//         createdAt: { gte: new Date(Date.now() - 60000) },
-//         description: { contains: sessionKey },
-//       },
-//       orderBy: { createdAt: "desc" },
-//     });
-
-//     if (masterProduct || caption) break;
-//     await new Promise((r) => setTimeout(r, 2500)); // Poll every 2.5s
-//     retries++;
-//   }
-
-//   // 5. ACTION: APPEND
-//   if (masterProduct && !caption) {
-//     return await prisma.product.update({
-//       where: { id: masterProduct.id },
-//       data: { images: { push: imageUrl } },
-//     });
-//   }
-
-//   // 6. ACTION: CREATE (Multi-Model Loop)
-//   const models = [
-//     "gemini-1.5-flash",
-//     "gemini-1.5-pro",
-//     "gemini-2.0-flash",
-//     "gemini-3.1-flash-lite-preview",
-//     "gemini-2.5-flash",
-//   ];
-//   let extractionData = null;
-
-//   for (const modelName of models) {
-//     try {
-//       const model = genAI.getGenerativeModel({ model: modelName });
-
-//       // 10s timeout per model to prevent blocking the appenders
-//       const timeoutPromise = new Promise((_, rej) =>
-//         setTimeout(() => rej(new Error("Timeout")), 10000),
-//       );
-//       const aiPromise = model.generateContent([
-//         {
-//           inlineData: {
-//             data: imageBuffer.toString("base64"),
-//             mimeType: "image/jpeg",
-//           },
-//         },
-//         `TASK: Catalog product. Input: "${caption}". Respond ONLY JSON: {name, price, size, category, desc}`,
-//       ]);
-
-//       const result: any = await Promise.race([aiPromise, timeoutPromise]);
-//       const text = result.response
-//         .text()
-//         .replace(/```json|```/g, "")
-//         .trim();
-//       extractionData = JSON.parse(text);
-//       if (extractionData) break;
-//     } catch (err) {
-//       console.warn(`⚠️ ${modelName} failed, moving to next...`);
-//       continue;
-//     }
-//   }
-
-//   if (!extractionData) throw new Error("All AI models failed to extract data.");
-
-//   // 7. FINAL SAVE
-//   return await prisma.product.create({
-//     data: {
-//       name: extractionData.name,
-//       price:
-//         parseInt(extractionData.price.toString().replace(/[^0-9]/g, "")) || 0,
-//       size: extractionData.size,
-//       description: `${extractionData.desc} \n\nREF: ${sessionKey}`,
-//       images: [imageUrl],
-//       category: {
-//         connectOrCreate: {
-//           where: { name: (extractionData.category || "General").toLowerCase() },
-//           create: {
-//             name: (extractionData.category || "General").toLowerCase(),
-//           },
-//         },
-//       },
-//     },
-//   });
-// }
-
 import { v2 as cloudinary } from "cloudinary";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import prisma from "../../../lib/prisma";
@@ -312,7 +168,7 @@ export async function processAdminImage(message: any) {
     return null;
   }
 
-  // 2. SESSION KEY
+  // 2. SESSION KEY (Groups images sent within the same 30s window)
   const timeBlock = Math.floor(Date.now() / 30000);
   const sessionKey = `lyvera_${senderPhone}_${timeBlock}`;
 
@@ -341,7 +197,7 @@ export async function processAdminImage(message: any) {
   const uploadRes: any = await uploadToCloudinary();
   const imageUrl = uploadRes.secure_url;
 
-  // 4. ATOMIC POLLING (Searching by uploadId instead of description)
+  // 4. ATOMIC POLLING (Wait for the 'Creator' to finish)
   let retries = 0;
   let masterProduct = null;
 
@@ -349,13 +205,13 @@ export async function processAdminImage(message: any) {
     masterProduct = await prisma.product.findFirst({
       where: {
         createdAt: { gte: new Date(Date.now() - 60000) },
-        uploadId: sessionKey, // <--- Clean search
+        description: { contains: sessionKey },
       },
       orderBy: { createdAt: "desc" },
     });
 
     if (masterProduct || caption) break;
-    await new Promise((r) => setTimeout(r, 2500));
+    await new Promise((r) => setTimeout(r, 2500)); // Poll every 2.5s
     retries++;
   }
 
@@ -380,10 +236,11 @@ export async function processAdminImage(message: any) {
   for (const modelName of models) {
     try {
       const model = genAI.getGenerativeModel({ model: modelName });
+
+      // 10s timeout per model to prevent blocking the appenders
       const timeoutPromise = new Promise((_, rej) =>
         setTimeout(() => rej(new Error("Timeout")), 10000),
       );
-
       const aiPromise = model.generateContent([
         {
           inlineData: {
@@ -407,7 +264,7 @@ export async function processAdminImage(message: any) {
     }
   }
 
-  if (!extractionData) throw new Error("All AI models failed.");
+  if (!extractionData) throw new Error("All AI models failed to extract data.");
 
   // 7. FINAL SAVE
   return await prisma.product.create({
@@ -416,8 +273,7 @@ export async function processAdminImage(message: any) {
       price:
         parseInt(extractionData.price.toString().replace(/[^0-9]/g, "")) || 0,
       size: extractionData.size,
-      description: extractionData.desc, // <--- Clean description!
-      uploadId: sessionKey, // <--- Hidden grouping key
+      description: `${extractionData.desc} \n\nREF: ${sessionKey}`,
       images: [imageUrl],
       category: {
         connectOrCreate: {
@@ -430,3 +286,147 @@ export async function processAdminImage(message: any) {
     },
   });
 }
+
+// import { v2 as cloudinary } from "cloudinary";
+// import { GoogleGenerativeAI } from "@google/generative-ai";
+// import prisma from "../../../lib/prisma";
+
+// cloudinary.config({
+//   cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+//   api_key: process.env.CLOUDINARY_API_KEY,
+//   api_secret: process.env.CLOUDINARY_API_SECRET,
+// });
+
+// const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+
+// export async function processAdminImage(message: any) {
+//   const imageId = message.image.id;
+//   const messageId = message.id;
+//   const caption = message.image.caption?.trim() || "";
+//   const senderPhone = message.from;
+
+//   // 1. DEDUPLICATION
+//   try {
+//     await prisma.processedMessage.create({ data: { id: messageId } });
+//   } catch (e) {
+//     return null;
+//   }
+
+//   // 2. SESSION KEY
+//   const timeBlock = Math.floor(Date.now() / 30000);
+//   const sessionKey = `lyvera_${senderPhone}_${timeBlock}`;
+
+//   // 3. MEDIA PROCESSING
+//   const mediaResponse = await fetch(
+//     `https://graph.facebook.com/v21.0/${imageId}`,
+//     {
+//       headers: { Authorization: `Bearer ${process.env.WHATSAPP_TOKEN}` },
+//     },
+//   );
+//   const mediaData = await mediaResponse.json();
+//   const download = await fetch(mediaData.url, {
+//     headers: { Authorization: `Bearer ${process.env.WHATSAPP_TOKEN}` },
+//   });
+//   const imageBuffer = Buffer.from(await download.arrayBuffer());
+
+//   const uploadToCloudinary = () =>
+//     new Promise((res, rej) => {
+//       cloudinary.uploader
+//         .upload_stream({ folder: "lyvera_bot" }, (err, result) =>
+//           err ? rej(err) : res(result),
+//         )
+//         .end(imageBuffer);
+//     });
+
+//   const uploadRes: any = await uploadToCloudinary();
+//   const imageUrl = uploadRes.secure_url;
+
+//   // 4. ATOMIC POLLING (Searching by uploadId instead of description)
+//   let retries = 0;
+//   let masterProduct = null;
+
+//   while (retries < 6) {
+//     masterProduct = await prisma.product.findFirst({
+//       where: {
+//         createdAt: { gte: new Date(Date.now() - 60000) },
+//         uploadId: sessionKey, // <--- Clean search
+//       },
+//       orderBy: { createdAt: "desc" },
+//     });
+
+//     if (masterProduct || caption) break;
+//     await new Promise((r) => setTimeout(r, 2500));
+//     retries++;
+//   }
+
+//   // 5. ACTION: APPEND
+//   if (masterProduct && !caption) {
+//     return await prisma.product.update({
+//       where: { id: masterProduct.id },
+//       data: { images: { push: imageUrl } },
+//     });
+//   }
+
+//   // 6. ACTION: CREATE (Multi-Model Loop)
+//   const models = [
+//     "gemini-1.5-flash",
+//     "gemini-1.5-pro",
+//     "gemini-2.0-flash",
+//     "gemini-3.1-flash-lite-preview",
+//     "gemini-2.5-flash",
+//   ];
+//   let extractionData = null;
+
+//   for (const modelName of models) {
+//     try {
+//       const model = genAI.getGenerativeModel({ model: modelName });
+//       const timeoutPromise = new Promise((_, rej) =>
+//         setTimeout(() => rej(new Error("Timeout")), 10000),
+//       );
+
+//       const aiPromise = model.generateContent([
+//         {
+//           inlineData: {
+//             data: imageBuffer.toString("base64"),
+//             mimeType: "image/jpeg",
+//           },
+//         },
+//         `TASK: Catalog product. Input: "${caption}". Respond ONLY JSON: {name, price, size, category, desc}`,
+//       ]);
+
+//       const result: any = await Promise.race([aiPromise, timeoutPromise]);
+//       const text = result.response
+//         .text()
+//         .replace(/```json|```/g, "")
+//         .trim();
+//       extractionData = JSON.parse(text);
+//       if (extractionData) break;
+//     } catch (err) {
+//       console.warn(`⚠️ ${modelName} failed, moving to next...`);
+//       continue;
+//     }
+//   }
+
+//   if (!extractionData) throw new Error("All AI models failed.");
+
+//   // 7. FINAL SAVE
+//   return await prisma.product.create({
+//     data: {
+//       name: extractionData.name,
+//       price:
+//         parseInt(extractionData.price.toString().replace(/[^0-9]/g, "")) || 0,
+//       size: extractionData.size,
+//       description: extractionData.desc, // <--- Clean description!
+//       uploadId: sessionKey, // <--- Hidden grouping key
+//       images: [imageUrl],
+//       category: {
+//         connectOrCreate: {
+//           where: { name: (extractionData.category || "General").toLowerCase() },
+//           create: {
+//             name: (extractionData.category || "General").toLowerCase(),
+//           },
+//         },
+//       },
+//     },
+//   });
+// }
