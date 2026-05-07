@@ -351,7 +351,7 @@ export default function InventoryActions({
                     </button>
                     <button
                       type="submit"
-                      className="flex-2 bg-maroon-primary text-white font-black py-4 rounded-xl shadow-lg shadow-maroon-primary/20"
+                      className="flex-1 bg-maroon-primary text-white font-black py-4 rounded-xl shadow-lg shadow-maroon-primary/20"
                     >
                       Save Changes
                     </button>
