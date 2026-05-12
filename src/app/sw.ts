@@ -3,8 +3,8 @@ import type { PrecacheEntry, SerwistGlobalConfig } from "serwist";
 import { Serwist } from "serwist";
 
 declare global {
-  interface WorkerGlobalScope extends SerwistGlobalConfig {
-    __SW_MANIFEST: (PrecacheEntry | string)[] | undefined;
+  interface ServiceWorkerGlobalScope extends SerwistGlobalConfig {
+    __SW_MANIFEST: (string | PrecacheEntry)[] | undefined;
   }
 }
 
@@ -15,7 +15,18 @@ const serwist = new Serwist({
   skipWaiting: true,
   clientsClaim: true,
   navigationPreload: true,
-  runtimeCaching: defaultCache, // Changed from defaultCacheOnFrontEndNav
+  // 1. Fixed: Use 'defaultCache' instead of 'defaultCacheOnNavs'
+  runtimeCaching: defaultCache,
+  fallbacks: {
+    entries: [
+      {
+        url: "/~offline",
+        matcher({ request }) {
+          return request.destination === "document";
+        },
+      },
+    ],
+  },
 });
 
 serwist.addEventListeners();
