@@ -15,14 +15,14 @@ const serwist = new Serwist({
   skipWaiting: true,
   clientsClaim: true,
   navigationPreload: true,
-  // 1. Fixed: Use 'defaultCache' instead of 'defaultCacheOnNavs'
   runtimeCaching: defaultCache,
   fallbacks: {
     entries: [
       {
         url: "/~offline",
         matcher({ request }) {
-          return request.destination === "document";
+          // 'navigate' is the standard for actual page changes
+          return request.mode === "navigate";
         },
       },
     ],
