@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && NEXT_TURBO=0 next build",
+    "build": "prisma generate build",
     "start": "next start",
     "lint": "eslint"
   },
