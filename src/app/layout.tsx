@@ -194,8 +194,7 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: "/favicon.ico",
-    // Updated path based on your folder structure in the screenshot
-    apple: "/icons/apple-icon-180.png",
+    apple: "/icons/apple-icon-180.png", // Fixed path to match your sidebar
   },
 };
 

@@ -7,22 +7,32 @@ export default function manifest(): MetadataRoute.Manifest {
     description: "Premium curated thrift store in Nairobi",
     start_url: "/",
     display: "standalone",
-    background_color: "#F3F4F6", // Your Cool Gray
-    theme_color: "#8B0000", // Your Maroon Primary
+    background_color: "#F3F4F6",
+    theme_color: "#8B0000",
     icons: [
       {
-        // Updated to match your sidebar: manifest-icon-192.maskable.png
         src: "/icons/manifest-icon-192.maskable.png",
         sizes: "192x192",
         type: "image/png",
-        purpose: "maskable",
+        purpose: "maskable", // Good for Android shapes
       },
       {
-        // Updated to match your sidebar: manifest-icon-512.maskable.png
+        src: "/icons/manifest-icon-192.maskable.png", // Reuse the same file
+        sizes: "192x192",
+        type: "image/png",
+        purpose: "any", // CRUCIAL: Browser needs this for "Installability"
+      },
+      {
         src: "/icons/manifest-icon-512.maskable.png",
         sizes: "512x512",
         type: "image/png",
         purpose: "maskable",
+      },
+      {
+        src: "/icons/manifest-icon-512.maskable.png",
+        sizes: "512x512",
+        type: "image/png",
+        purpose: "any", // CRUCIAL
       },
     ],
   };
