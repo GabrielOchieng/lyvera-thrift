@@ -2,6 +2,7 @@ import { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
+    id: "/", // Add this line
     name: "Lyvera Thrift",
     short_name: "Lyvera",
     description: "Premium curated thrift store in Nairobi",
