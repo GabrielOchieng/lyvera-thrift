@@ -35,19 +35,20 @@ export default function manifest(): MetadataRoute.Manifest {
         purpose: "any", // CRUCIAL
       },
     ],
+    // ... inside your manifest return object
     screenshots: [
       {
-        src: "/og-image.png", // You can use your OG image for now
-        sizes: "1200x630",
-        type: "image/jpeg",
-        form_factor: "wide", // Fixes the "desktop" warning
-        label: "Lyvera Thrift Home Screen",
+        src: "/og-image.png",
+        sizes: "1424x752", // Updated to match actual size
+        type: "image/png",
+        form_factor: "wide",
+        label: "Lyvera Thrift Desktop View",
       },
       {
         src: "/og-image.png",
-        sizes: "1200x630",
-        type: "image/jpeg",
-        form_factor: "narrow", // Fixes the "mobile" warning
+        sizes: "1424x752", // Updated to match actual size
+        type: "image/png",
+        form_factor: "narrow",
         label: "Lyvera Thrift Mobile View",
       },
     ],
