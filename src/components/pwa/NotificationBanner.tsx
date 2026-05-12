@@ -52,13 +52,13 @@ export default function PushBanner() {
           </button>
 
           <h2 className="text-2xl font-bold text-maroon-primary mb-3">
-            "Lyvera Store" Would like to send you notifications
+            Get the Latest Drops First! 👗
           </h2>
 
           <p className="text-gray-600 text-sm leading-relaxed mb-8">
-            Notifications may include new bale alerts, flash sales, and order
-            delivery updates. These can be configured in your browser settings
-            at any time.
+            Be the first to know when <strong>new bales</strong> arrive and
+            track your orders in real-time. You can turn these off anytime in
+            settings.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
