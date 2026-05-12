@@ -18,13 +18,9 @@ import withSerwistInit from "@serwist/next";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Option 1: Force bypass the type check for the build engine
-  experimental: {
-    ...({ turbo: {} } as any),
-  },
-
-  // Option 2: Some Next 16 builds look for this at the top level
-  // turbopack: {},
+  // Move it out of experimental and place it at the top level
+  // Use 'as any' to bypass the TypeScript interface check
+  ...({ turbopack: {} } as any),
 
   images: {
     remotePatterns: [
@@ -40,7 +36,6 @@ const nextConfig: NextConfig = {
 const withSerwist = withSerwistInit({
   swSrc: "src/app/sw.ts",
   swDest: "public/sw.js",
-  // Ensure this is set so dev mode doesn't crash your local Turbopack
   disable: process.env.NODE_ENV !== "production",
 });
 
