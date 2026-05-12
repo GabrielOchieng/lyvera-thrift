@@ -19,6 +19,8 @@ model User {
   sessions      Session[]
   accounts      Account[]
 
+  pushSubscriptions PushSubscription[]
+
   @@map("user")
 }
 
@@ -65,24 +67,24 @@ model Verification {
 }
 
 model Product {
-  id          String      @id @default(cuid())
+  id          String   @id @default(cuid())
   name        String
   description String?
-  uploadId    String?  // <--- ADD THIS (Optional, used for grouping)
+  uploadId    String? // <--- ADD THIS (Optional, used for grouping)
   price       Int
   size        String
   images      String[]
-  isSold      Boolean     @default(false)
-  stock       Int         @default(1)
+  isSold      Boolean  @default(false)
+  stock       Int      @default(1)
   categoryId  String
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  source      String      @default("TIKTOK")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  source      String   @default("TIKTOK")
   videoUrl    String?
-  category    Category    @relation(fields: [categoryId], references: [id])
-  
+  category    Category @relation(fields: [categoryId], references: [id])
+
   // ✅ ADDED: This allows you to check which OrderItems this product belongs to
-  orderItems  OrderItem[]
+  orderItems OrderItem[]
 
   @@index([categoryId])
   @@index([isSold])
@@ -108,28 +110,28 @@ model Order {
   totalAmount       Float
   status            String      @default("PENDING") // PENDING, VERIFIED, CANCELLED
   items             OrderItem[]
-  phone String @default("0000000000")
+  phone             String      @default("0000000000")
 }
 
 model OrderItem {
-  id        String  @id @default(cuid())
+  id        String @id @default(cuid())
   orderId   String
   productId String
   name      String
   price     Float
   size      String
   image     String
-  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  
+  order     Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
   // ✅ ADDED: This links the OrderItem back to the actual Product record
-  product   Product @relation(fields: [productId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
 }
 
 model UserSession {
   phone       String   @id
   state       String   @default("IDLE")
-  userName    String?  // <--- ADD THIS
-  location    String?  // <--- ADD THIS
+  userName    String? // <--- ADD THIS
+  location    String? // <--- ADD THIS
   cartItems   Json?
   lastOrderId String?
   updatedAt   DateTime @updatedAt
@@ -140,16 +142,15 @@ model ProcessedMessage {
   createdAt DateTime @default(now())
 }
 
-
 model ChatSession {
-  id        String   @id @default(uuid())
-  phone     String   @unique
-  state     String   @default("browsing")
-  cart      Json     @default("[]")
+  id    String @id @default(uuid())
+  phone String @unique
+  state String @default("browsing")
+  cart  Json   @default("[]")
 
-  name      String?
+  name       String?
   phoneInput String?
-  location  String?
+  location   String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -158,7 +159,20 @@ model ChatSession {
 model ChatHistory {
   id        String   @id @default(cuid())
   phone     String
-  role      String   // "user" or "bot"
+  role      String // "user" or "bot"
   message   String
   createdAt DateTime @default(now())
+}
+
+model PushSubscription {
+  id        String   @id @default(cuid())
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  userId    String? // Link to your User model
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
 }
