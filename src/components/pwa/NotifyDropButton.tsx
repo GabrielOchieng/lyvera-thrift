@@ -13,7 +13,7 @@ export default function NotifyDropButton() {
 
     setLoading(true);
     try {
-      const res = await fetch("/api/admin/notify-drop", {
+      const res = await fetch("/api/notify-drop", {
         method: "POST",
         body: JSON.stringify({
           title: "New Drop at Lyvera Store! 👗",
