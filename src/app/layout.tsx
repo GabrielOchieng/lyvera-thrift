@@ -75,7 +75,7 @@
 //     icon: "/favicon.ico",
 //     apple: "/apple-touch-icon.png",
 //   },
-//   themeColor: "#800000", // Maroon primary color to match your brand
+//   themeColor: "#8b1a4f", // Maroon primary color to match your brand
 // };
 
 // export default function RootLayout({
@@ -119,7 +119,7 @@ const geistMono = Geist_Mono({
 });
 
 export const viewport: Viewport = {
-  themeColor: "#800000",
+  themeColor: "#8b1a4f",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
