@@ -107,6 +107,7 @@ import { Toaster } from "sonner";
 import RecentSoldToast from "@/components/cart/RecentSoldToast";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
 import AIStylist from "@/components/ai/AiStylist";
+import PWAUpdater from "@/components/pwa/Pwa-updater";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -213,6 +214,7 @@ export default function RootLayout({
         {/* <WhatsAppFloat /> */}
         <AIStylist />
         <Toaster position="top-center" richColors />
+        <PWAUpdater />
         <Analytics />
       </body>
     </html>

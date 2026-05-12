@@ -36,7 +36,7 @@ export default function OfflinePage() {
           Connection Lost
         </h1>
 
-        <p className="text-gray-500 mb-8 max-w-[280px]">
+        <p className="text-gray-500 mb-8 max-w-70">
           It looks like you&apos;re in a low-signal area. Check your data or
           Wi-Fi settings to keep shopping.
         </p>
@@ -45,7 +45,7 @@ export default function OfflinePage() {
           <button
             onClick={handleRetry}
             disabled={isRetrying}
-            className="flex items-center justify-center gap-2 w-full bg-maroon-primary text-white px-8 py-3 rounded-xl font-semibold uppercase tracking-wider text-sm transition-all active:scale-95 disabled:opacity-70"
+            className="flex cursor-pointer items-center justify-center gap-2 w-full bg-maroon-primary text-white px-8 py-3 rounded-xl font-semibold uppercase tracking-wider text-sm transition-all active:scale-95 disabled:opacity-70"
           >
             {isRetrying ? (
               <RefreshCw className="w-4 h-4 animate-spin" />
