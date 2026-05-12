@@ -40,7 +40,7 @@ export default async function Home() {
     <main>
       <HeroSlider />
       <NotificationBanner />
-      <TrustSignals trendingTags={trending} />
+      {/* <TrustSignals trendingTags={trending} /> */}
 
       <section className="px-6 py-8 max-w-7xl mx-auto">
         <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
