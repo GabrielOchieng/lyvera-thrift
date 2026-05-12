@@ -14,11 +14,18 @@
 // };
 
 // export default nextConfig;
-
 import withSerwistInit from "@serwist/next";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Option 1: Force bypass the type check for the build engine
+  experimental: {
+    ...({ turbo: {} } as any),
+  },
+
+  // Option 2: Some Next 16 builds look for this at the top level
+  // turbopack: {},
+
   images: {
     remotePatterns: [
       {
@@ -30,14 +37,11 @@ const nextConfig: NextConfig = {
   },
 };
 
-// 1. Initialize Serwist
 const withSerwist = withSerwistInit({
-  swSrc: "src/app/sw.ts", // This is the source file we created earlier
-  swDest: "public/sw.js", // The destination for the generated worker
-  disable: process.env.NODE_ENV === "development",
-  // This ensures your Cloudinary images aren't aggressively
-  // cached by the service worker unless you explicitly want them to be.
+  swSrc: "src/app/sw.ts",
+  swDest: "public/sw.js",
+  // Ensure this is set so dev mode doesn't crash your local Turbopack
+  disable: process.env.NODE_ENV !== "production",
 });
 
-// 2. Wrap and export your config
 export default withSerwist(nextConfig);
