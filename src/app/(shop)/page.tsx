@@ -5,6 +5,7 @@ import HeroSlider from "@/components/HeroSlider";
 import prisma from "../../../lib/prisma";
 import { safeDbQuery } from "@/lib/db-utils"; // Import your helper
 import TrustSignals from "@/components/TrustSignals";
+import NotificationBanner from "@/components/pwa/NotificationBanner";
 
 async function getTrendingData() {
   // Pulls 4 categories with the most items
@@ -38,7 +39,7 @@ export default async function Home() {
   return (
     <main>
       <HeroSlider />
-
+      <NotificationBanner />
       <TrustSignals trendingTags={trending} />
 
       <section className="px-6 py-8 max-w-7xl mx-auto">
