@@ -51,6 +51,17 @@ const serwist = new Serwist({
   clientsClaim: true,
   navigationPreload: true,
   runtimeCaching: defaultCache,
+  fallbacks: {
+    entries: [
+      {
+        url: "/~offline",
+        matcher({ request }) {
+          // 'navigate' is the standard for actual page changes
+          return request.mode === "navigate";
+        },
+      },
+    ],
+  },
 });
 
 // 1. Listen for the 'push' event from the server
