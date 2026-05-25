@@ -338,14 +338,26 @@ export default function OrderListClient({
                       className="flex justify-between items-center group/item"
                     >
                       <div className="flex items-center gap-4">
-                        <div className="h-16 w-16 bg-zinc-50 rounded-2xl overflow-hidden border border-zinc-100 shrink-0 shadow-sm">
+                        <div className="h-16 w-16 bg-zinc-50 rounded-2xl overflow-hidden border border-zinc-100 shrink-0 shadow-sm relative">
                           {item.image ? (
+                            /* 1. Main Image Render with hover scale */
                             <img
                               src={item.image}
                               alt={item.name}
                               className="h-full w-full object-cover transition-transform group-hover/item:scale-110 duration-500"
                             />
+                          ) : item.videoUrl ? (
+                            /* 2. Video Thumbnail Fallback with matching hover scale */
+                            <video
+                              src={`${item.videoUrl}#t=0.01`}
+                              preload="metadata"
+                              muted
+                              playsInline
+                              crossOrigin="anonymous"
+                              className="h-full w-full object-cover transition-transform group-hover/item:scale-110 duration-500"
+                            />
                           ) : (
+                            /* 3. Icon Placeholder Fallback if both media values are missing */
                             <div className="h-full w-full flex items-center justify-center">
                               <Tag className="h-4 w-4 text-zinc-300" />
                             </div>
