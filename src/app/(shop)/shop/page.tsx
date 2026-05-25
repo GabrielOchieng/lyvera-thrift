@@ -211,6 +211,7 @@ export default async function ShopPage({
                   key={product.id}
                   {...product}
                   image={product.images[0]}
+                  videoUrl={product.videoUrl}
                   categoryName={product.category.name}
                 />
               ))}

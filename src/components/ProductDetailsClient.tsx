@@ -80,6 +80,7 @@ export default function ProductDetailClient({ product, relatedProducts }: any) {
                   {...item}
                   categoryName={item.category.name}
                   image={item.images[0]}
+                  videoUrl={item.videoUrl}
                 />
               </motion.div>
             ))}

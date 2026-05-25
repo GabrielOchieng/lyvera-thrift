@@ -173,6 +173,7 @@ export default async function ProductDetailPage({
                 price={item.price}
                 size={item.size}
                 image={item.images[0]}
+                videoUrl={item.videoUrl}
                 categoryName={item.category.name}
                 isSold={item.isSold}
               />

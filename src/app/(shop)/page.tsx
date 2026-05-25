@@ -81,7 +81,7 @@ export default async function Home() {
               size={product.size}
               categoryName={product.category.name}
               image={product.images[0]}
-              videoUrl={product.videoUrl} // ✅ FIXED: Feeds Cloudinary video strings into component
+              videoUrl={product.videoUrl}
               isSold={product.isSold}
             />
           ))}
