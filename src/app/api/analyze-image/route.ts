@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     const imageBuffer = await imageResponse.arrayBuffer();
 
     const result = await streamText({
-      model: google("gemini-3.1-flash-lite-preview"),
+      model: google("gemini-3.1-flash-lite"),
       output: Output.object({ schema: productSuggestionSchema }),
       messages: [
         {

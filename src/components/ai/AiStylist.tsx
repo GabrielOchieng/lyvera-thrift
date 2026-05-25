@@ -147,7 +147,7 @@ export default function AIStylist() {
   return (
     <>
       {/* 1. AUTO-TOOLTIP */}
-      {!isOpen && showTooltip && (
+      {/* {!isOpen && showTooltip && (
         <div className="fixed bottom-24 right-6 bg-white px-4 py-2 rounded-2xl shadow-xl border border-zinc-100 z-50 animate-in fade-in slide-in-from-bottom-2 duration-500">
           <div className="flex items-center gap-2">
             <Sparkles size={12} className="text-maroon-primary" />
@@ -156,7 +156,7 @@ export default function AIStylist() {
             </p>
           </div>
         </div>
-      )}
+      )} */}
 
       {/* 2. TRIGGER BUTTON WITH PING */}
       <button

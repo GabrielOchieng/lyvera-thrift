@@ -123,7 +123,7 @@ export async function handleCustomerChat(message: any) {
     // 6. AI GENERATION (Model Queue)
     let responseText = "";
     const models = [
-      "gemini-3.1-flash-lite-preview",
+      "gemini-3.1-flash-lite",
       "gemini-2.5-flash",
       "gemini-2.0-flash",
     ];
