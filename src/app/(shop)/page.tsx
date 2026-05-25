@@ -34,8 +34,6 @@ export default async function Home() {
     }),
   );
 
-  console.log("products", products);
-
   const trending = await getTrendingData();
 
   return (

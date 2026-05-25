@@ -16,8 +16,6 @@ export default async function OrdersPage() {
     console.error("Prisma Fetch Error:", error);
   }
 
-  console.log("ord", orders);
-
   return (
     <div className="space-y-8 ">
       {/* Search is now inside OrderListClient so it can access the state */}
