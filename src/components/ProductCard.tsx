@@ -134,7 +134,7 @@ interface ProductCardProps {
   price: number;
   size: string;
   image: string;
-  videoUrl?: string | null; // Added to match your Postgres schema column
+  videoUrl?: string | null;
   categoryName: string;
   isSold: boolean;
 }
@@ -168,34 +168,37 @@ export default function ProductCard({
     }
   };
 
-  // Hover handlers to play/pause video if it exists
   const handleMouseEnter = () => {
     if (videoRef.current) {
-      videoRef.current.play().catch(() => {});
+      // Force reload the asset buffer in case the browser suspended the link
+      videoRef.current.load();
+      videoRef.current.play().catch((err) => {
+        console.warn("Autoplay managed by browser policy:", err);
+      });
     }
   };
 
   const handleMouseLeave = () => {
     if (videoRef.current) {
       videoRef.current.pause();
-      videoRef.current.currentTime = 0; // Rewind to beginning
+      videoRef.current.currentTime = 0;
     }
   };
 
   return (
     <div
-      className="group relative flex flex-col"
+      className="group relative flex flex-col w-full h-full"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <Link href={`/shop/${id}`} className="block">
-        <div className="relative aspect-3/2 overflow-hidden rounded-2xl bg-zinc-100 border border-zinc-200">
-          {/* Default Image fallback */}
+      <Link href={`/shop/${id}`} className="block w-full h-full">
+        <div className="relative aspect-3/2 overflow-hidden rounded-2xl bg-zinc-100 border border-zinc-200 isolation-isolate">
+          {/* Default Image */}
           <img
             src={image || "https://placehold.co/400x533?text=Lyvera+Piece"}
             alt={name}
             referrerPolicy="no-referrer"
-            className={`w-full h-full object-cover transition-opacity duration-300 ${
+            className={`w-full h-full object-cover transition-opacity duration-300 z-0 ${
               videoUrl ? "group-hover:opacity-0" : ""
             }`}
             onError={(e) => {
@@ -204,27 +207,31 @@ export default function ProductCard({
             }}
           />
 
-          {/* Video Preview Layer (Plays on hover) */}
+          {/* Video Preview Layer */}
           {videoUrl && !isSold && (
             <video
               ref={videoRef}
-              src={videoUrl}
               loop
               muted
+              preload="none" // Saves user bandwidth until they actually hover over the card
               playsInline
-              className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-            />
+              crossOrigin="anonymous" // Prevents DOM canvas blocking headers from Cloudinary
+              className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10"
+            >
+              <source src={videoUrl} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
           )}
 
           {isSold && (
-            <div className="absolute inset-0 bg-white/60 backdrop-blur-[2px] flex items-center justify-center z-10">
+            <div className="absolute inset-0 bg-white/60 backdrop-blur-[2px] flex items-center justify-center z-20">
               <span className="bg-zinc-900 text-white px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">
                 Sold Out
               </span>
             </div>
           )}
 
-          <div className="absolute top-3 left-3 z-10">
+          <div className="absolute top-3 left-3 z-20">
             <span className="bg-white/90 backdrop-blur px-2 py-1 rounded-lg text-[10px] font-bold text-zinc-900 shadow-sm uppercase">
               {size}
             </span>
@@ -233,7 +240,7 @@ export default function ProductCard({
           {!isSold && (
             <button
               onClick={handleButtonClick}
-              className={`absolute cursor-pointer bottom-4 left-4 right-4 py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all transform translate-y-16 group-hover:translate-y-0 shadow-2xl z-20 ${
+              className={`absolute cursor-pointer bottom-4 left-4 right-4 py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all transform translate-y-16 group-hover:translate-y-0 shadow-2xl z-30 ${
                 isInCart
                   ? "bg-zinc-900 text-white ring-2 ring-white/20"
                   : "bg-maroon-primary text-white hover:bg-thrift-gold hover:text-black"
