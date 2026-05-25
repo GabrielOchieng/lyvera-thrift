@@ -108,7 +108,7 @@ export async function POST(req: Request) {
     // 2. GLOBAL ADMIN CONFIGURATION
     if (isAdmin) {
       // If the admin uploads a new camera-grade thrift item photo
-      if (message.image) {
+      if (message.image || message.video) {
         const product = await processAdminImage(message);
 
         if (product) {
