@@ -475,14 +475,11 @@ export async function handleCustomerChat(message: any) {
       }
     }
 
-    // 8. FIXED: DYNAMIC MULTI-IMAGE RESPONSE
-    // If Gemini outputs arrays of IDs, we send all images sequentially
+    // 8. DYNAMIC MULTI-IMAGE RESPONSE
     if (Array.isArray(productIds) && productIds.length > 0) {
-      // Send the main conversation text message response block first
       await logMessage(from, "bot", reply);
       await sendWhatsApp(from, reply);
 
-      // Loop through and fire every requested media asset over the graph channel
       for (const id of productIds) {
         const selectedProduct = products.find((p) => p.id === id);
         if (selectedProduct?.images?.[0]) {
@@ -495,14 +492,13 @@ export async function handleCustomerChat(message: any) {
             image: selectedProduct.images[0],
             caption: `*${selectedProduct.name}*\n💰 KES ${selectedProduct.price}`,
           });
-          // Small safety buffer to prevent out-of-order delivery across cellular nodes
           await new Promise((r) => setTimeout(r, 800));
         }
       }
       return;
     }
 
-    // Fallback if no specific products array came back from Gemini text matching
+    // Fallback text response
     await logMessage(from, "bot", reply);
     await sendWhatsApp(from, reply);
   } catch (error) {
@@ -602,13 +598,18 @@ async function handleInitiateCheckout(from: string, session: any) {
   return await sendWhatsApp(from, checkStart);
 }
 
+// ==========================================================
+// FIXED: sendWhatsApp function body with text wrapper object
+// ==========================================================
 export async function sendWhatsApp(
   to: string,
   content: string | { image: string; caption: string },
 ) {
   const payload: any = { messaging_product: "whatsapp", to };
+
   if (typeof content === "string") {
     payload.type = "text";
+    payload.text = { body: content }; // FIXED: Wrapped correctly so it is never null
   } else {
     payload.type = "image";
     payload.image = { link: content.image, caption: content.caption };
