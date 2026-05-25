@@ -22,9 +22,9 @@ export default async function Home() {
   // Wrap the fetch in safeDbQuery to handle Neon's cold starts
   const products = await safeDbQuery(() =>
     prisma.product.findMany({
-      where: {
-        isSold: false,
-      },
+      // where: {
+      //   isSold: false,
+      // },
       include: {
         category: true,
       },
