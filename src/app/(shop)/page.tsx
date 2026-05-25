@@ -34,6 +34,8 @@ export default async function Home() {
     }),
   );
 
+  console.log("products", products);
+
   const trending = await getTrendingData();
 
   return (
@@ -79,6 +81,7 @@ export default async function Home() {
               size={product.size}
               categoryName={product.category.name}
               image={product.images[0]}
+              videoUrl={product.videoUrl} // ✅ FIXED: Feeds Cloudinary video strings into component
               isSold={product.isSold}
             />
           ))}
