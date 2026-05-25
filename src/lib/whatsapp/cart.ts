@@ -8,33 +8,6 @@ export async function getOrCreateSession(phone: string) {
   });
 }
 
-// src/lib/whatsapp/cart.ts
-// export async function addToCart(phone: string, product: any) {
-//   // ADD THIS LOG
-//   console.log(
-//     "DEBUG: Adding product to cart:",
-//     JSON.stringify(product, null, 2),
-//   );
-
-//   const session = await getOrCreateSession(phone);
-//   const currentCart = (session.cart as any[]) || [];
-
-//   const normalizedItem = {
-//     id: product.id,
-//     name: product.name,
-//     price: product.price,
-//     image: product.images?.[0] || "https://placeholder-url.com/default.jpg",
-//     size: product.size || "Standard",
-//   };
-
-//   if (currentCart.find((i) => i.id === normalizedItem.id)) return;
-
-//   return await prisma.chatSession.update({
-//     where: { phone },
-//     data: { cart: [...currentCart, normalizedItem] },
-//   });
-// }
-
 export async function addToCart(phone: string, product: any) {
   if (!product || !product.id) {
     console.error("DEBUG: Cannot add invalid product to cart:", product);
@@ -81,6 +54,22 @@ export async function addToCart(phone: string, product: any) {
     data: {
       cart: updatedCart,
     },
+  });
+}
+
+export async function removeFromCart(phone: string, productId: string) {
+  const session = await prisma.chatSession.findUnique({ where: { phone } });
+  if (!session || !Array.isArray(session.cart)) return null;
+
+  // Filter out the item matching the ID
+  const currentCart = session.cart as any[];
+  const updatedCart = currentCart.filter(
+    (item) => item.id !== productId && item.productId !== productId,
+  );
+
+  return await prisma.chatSession.update({
+    where: { phone },
+    data: { cart: updatedCart },
   });
 }
 
